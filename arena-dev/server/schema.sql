@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS models (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  provider TEXT NOT NULL,
+  model_id TEXT NOT NULL,
+  type TEXT NOT NULL, -- 'video', 'image', 'text', 'speech'
+  elo_rating REAL DEFAULT 1200,
+  wins INTEGER NOT NULL DEFAULT 0,
+  losses INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS prompts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  text TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS battles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  prompt_id INTEGER NOT NULL,
+  model_a_id INTEGER NOT NULL,
+  model_b_id INTEGER NOT NULL,
+  output_a TEXT,
+  output_b TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (prompt_id) REFERENCES prompts(id),
+  FOREIGN KEY (model_a_id) REFERENCES models(id),
+  FOREIGN KEY (model_b_id) REFERENCES models(id)
+);
+
+CREATE TABLE IF NOT EXISTS votes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  battle_id INTEGER NOT NULL,
+  winner_model_id INTEGER NOT NULL, 
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (battle_id) REFERENCES battles(id),
+  FOREIGN KEY (winner_model_id) REFERENCES models(id)
+);

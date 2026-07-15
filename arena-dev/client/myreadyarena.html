@@ -1,0 +1,3781 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eden · The Arena for AI Video and Image Models</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* === CSS VARIABLES === */
+        :root {
+            --bg-primary: #050505;
+            --bg-secondary: #0E0E10;
+            --bg-card: #131316;
+            --bg-card-hover: #1a1a1f;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.14);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A0;
+            --text-tertiary: #666666;
+            --gold: #F5C451;
+            --gold-dim: rgba(245, 196, 81, 0.15);
+            --accent: #4F7DFF;
+            --accent-dim: rgba(79, 125, 255, 0.12);
+            --success: #39D98A;
+            --danger: #FF5E5E;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-bg-hover: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(79, 125, 255, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-pill: 999px;
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --ease-apple: cubic-bezier(0.286, 0, 0.06, 1);
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            --nav-height: 56px;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #FAFAFA;
+            --bg-secondary: #F0F0F2;
+            --bg-card: #FFFFFF;
+            --bg-card-hover: #F5F5F7;
+            --border: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.14);
+            --text-primary: #1D1D1F;
+            --text-secondary: #6E6E73;
+            --text-tertiary: #999999;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-bg-hover: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 40px rgba(79, 125, 255, 0.04);
+        }
+
+        /* === RESET & BASE === */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.5s var(--ease-smooth), color 0.5s var(--ease-smooth);
+            line-height: 1.5;
+        }
+        ::selection {
+            background: var(--accent);
+            color: white;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+            color: inherit;
+        }
+        input,
+        textarea {
+            font-family: inherit;
+            color: inherit;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .chess-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.025;
+            background-image:
+                linear-gradient(var(--text-primary) 1px, transparent 1px),
+                linear-gradient(90deg, var(--text-primary) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 60s linear infinite;
+        }
+        [data-theme="light"] .chess-grid {
+            opacity: 0.03;
+        }
+
+        @keyframes gridDrift {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(60px, 60px);
+            }
+        }
+
+        .gradient-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(120px);
+            opacity: 0.4;
+            will-change: transform;
+        }
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            top: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(79, 125, 255, 0.15) 0%, transparent 70%);
+            animation: orbFloat1 20s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -150px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(245, 196, 81, 0.1) 0%, transparent 70%);
+            animation: orbFloat2 25s ease-in-out infinite;
+        }
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            top: 40%;
+            left: 50%;
+            background: radial-gradient(circle, rgba(57, 217, 138, 0.06) 0%, transparent 70%);
+            animation: orbFloat3 30s ease-in-out infinite;
+        }
+        [data-theme="light"] .gradient-orb {
+            opacity: 0.2;
+        }
+
+        @keyframes orbFloat1 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(100px, 80px) scale(1.1);
+            }
+        }
+        @keyframes orbFloat2 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(-80px, -60px) scale(1.15);
+            }
+        }
+        @keyframes orbFloat3 {
+            0%,
+            100% {
+                transform: translate(-50%, 0) scale(1);
+            }
+            33% {
+                transform: translate(-40%, 40px) scale(0.9);
+            }
+            66% {
+                transform: translate(-60%, -30px) scale(1.1);
+            }
+        }
+
+        .page {
+            display: none;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
+        .page.active {
+            display: block;
+            animation: pageIn 0.6s var(--ease-out-expo);
+        }
+        @keyframes pageIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+        .section-subtitle {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(14px, 1.8vw, 17px);
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 1.7;
+    max-width: 600px;
+    opacity: 0.85;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+        /* === NAVIGATION === */
+        .nav-bar {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: auto;
+            max-width: calc(100% - 32px);
+            animation: navSlideIn 0.8s var(--ease-out-expo) 0.2s both;
+        }
+        @keyframes navSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px 6px 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px) saturate(1.4);
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-md);
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .nav-inner:hover {
+            background: var(--glass-bg-hover);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            padding-right: 8px;
+            border-right: 1px solid var(--border);
+            margin-right: 4px;
+            transition: opacity 0.2s;
+        }
+        .nav-logo:hover {
+            opacity: 0.8;
+        }
+        .logo-icon {
+            color: var(--accent);
+        }
+
+        .nav-tabs {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            position: relative;
+        }
+        .nav-tab {
+            position: relative;
+            z-index: 1;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: var(--radius-pill);
+            transition: color 0.25s var(--ease-smooth);
+            white-space: nowrap;
+        }
+        .nav-tab:hover {
+            color: var(--text-primary);
+        }
+        .nav-tab.active {
+            color: var(--text-primary);
+            background: var(--glass-bg-hover);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-left: 4px;
+            transition: background 0.2s, transform 0.2s var(--ease-spring);
+        }
+        .theme-toggle:hover {
+            background: var(--glass-bg-hover);
+            transform: scale(1.05);
+        }
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+        .icon-sun {
+            display: none;
+        }
+        .icon-moon {
+            display: block;
+        }
+        [data-theme="light"] .icon-sun {
+            display: block;
+        }
+        [data-theme="light"] .icon-moon {
+            display: none;
+        }
+
+        /* === HERO === */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 120px 24px 80px;
+            position: relative;
+        }
+        .hero-content {
+            text-align: center;
+            max-width: 720px;
+            width: 100%;
+            animation: heroIn 1s var(--ease-out-expo) 0.4s both;
+        }
+        @keyframes heroIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            margin-bottom: 32px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            animation: badgeIn 0.6s var(--ease-out-expo) 0.6s both;
+        }
+        @keyframes badgeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+.hero-title {
+    font-size: clamp(36px, 6vw, 68px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: 20px;
+        text-align: center;
+
+    background: linear-gradient(180deg, var(--text-primary) 40%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleIn 0.8s var(--ease-out-expo) 0.5s both;
+}
+        @keyframes titleIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(14px, 2vw, 18px);
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    max-width: 620px;
+    opacity: 0.85;
+        text-align: center;
+        
+
+    margin-bottom: 48px;
+    text-transform: none;
+    animation: subtitleIn 0.8s var(--ease-out-expo) 0.7s both;
+}
+        @keyframes subtitleIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === BATTLE MODE TOGGLE (Image generation addition) === */
+        .battle-mode-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 3px;
+            margin: 0 auto 14px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            animation: inputIn 0.8s var(--ease-out-expo) 0.7s both;
+        }
+        .mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: var(--radius-pill);
+            transition: color 0.25s var(--ease-smooth), background 0.25s var(--ease-smooth);
+        }
+        .mode-btn:hover {
+            color: var(--text-primary);
+        }
+        .mode-btn.active {
+            color: var(--bg-primary);
+            background: var(--gold);
+        }
+        .mode-btn svg {
+            flex-shrink: 0;
+        }
+
+        .hero-input-wrap {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            animation: inputIn 0.8s var(--ease-out-expo) 0.8s both;
+        }
+        .hero-input-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+        @keyframes inputIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hero-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            font-size: 15px;
+            color: var(--text-primary);
+            resize: none;
+            outline: none;
+            min-height: 44px;
+            max-height: 120px;
+            line-height: 1.5;
+        }
+        .hero-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .btn-generate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            white-space: nowrap;
+            transition: transform 0.2s var(--ease-spring), box-shadow 0.3s, filter 0.2s;
+            box-shadow: 0 4px 16px rgba(79, 125, 255, 0.3);
+        }
+        .btn-generate:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 24px rgba(79, 125, 255, 0.4);
+            filter: brightness(1.1);
+        }
+        .btn-generate:active {
+            transform: scale(0.97);
+        }
+        .btn-generate svg {
+            transition: transform 0.2s var(--ease-spring);
+        }
+        .btn-generate:hover svg {
+            transform: translateX(3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 64px;
+            animation: statsIn 0.8s var(--ease-out-expo) 1s both;
+        }
+        @keyframes statsIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-number {
+            display: block;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border);
+        }
+
+        /* === COMPARE === */
+        .compare-section {
+            padding: 120px 24px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .compare-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .compare-header .section-subtitle {
+            margin: 0 auto;
+        }
+        .compare-prompt-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            padding: 12px 24px;
+            margin-bottom: 40px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 40px;
+        }
+        .prompt-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            padding: 3px 10px;
+            background: var(--accent-dim);
+            border-radius: var(--radius-pill);
+        }
+        .prompt-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .contender-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            overflow: hidden;
+            transition: transform 0.4s var(--ease-spring), box-shadow 0.4s, border-color 0.3s;
+            animation: cardSlideUp 0.7s var(--ease-out-expo) both;
+        }
+        .contender-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        .contender-card:nth-child(3) {
+            animation-delay: 0.35s;
+        }
+        @keyframes cardSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .contender-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-hover);
+        }
+        .contender-card.winner {
+            border-color: var(--success);
+            box-shadow: 0 0 30px rgba(57, 217, 138, 0.1);
+        }
+        .contender-card.loser {
+            opacity: 0.5;
+            transform: scale(0.97);
+        }
+
+        .contender-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .contender-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+        }
+        .contender-elo {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold);
+            font-variant-numeric: tabular-nums;
+            transition: transform 0.3s var(--ease-spring);
+        }
+        .contender-elo.bump {
+            animation: eloBump 0.5s var(--ease-spring);
+        }
+        @keyframes eloBump {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .video-container {
+            position: relative;
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--bg-secondary);
+            margin-bottom: 16px;
+        }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        /* Image mode addition — mirrors .video-container video sizing */
+        .video-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        .video-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+        }
+        .video-play-icon {
+            color: var(--text-tertiary);
+            opacity: 0.5;
+        }
+        .video-shimmer {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        .video-error {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-tertiary);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-vote {
+            width: 100%;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: transform 0.2s var(--ease-spring), background 0.2s, border-color 0.2s, box-shadow 0.3s, opacity 0.2s;
+        }
+        .btn-vote:hover {
+            background: var(--glass-bg-hover);
+            border-color: var(--border-hover);
+            transform: scale(1.03);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-vote:active {
+            transform: scale(0.97);
+        }
+        .btn-vote.voted {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .btn-vote:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .vote-icon {
+            font-size: 16px;
+        }
+
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vs-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            animation: vsPulse 3s ease-in-out infinite;
+        }
+        @keyframes vsPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 transparent;
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(245, 196, 81, 0.1);
+            }
+        }
+
+        .vote-result {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: resultIn 0.5s var(--ease-out-expo);
+        }
+        @keyframes resultIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .result-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+        }
+        .result-icon {
+            font-size: 20px;
+            color: var(--gold);
+        }
+        .result-text {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .elo-change {
+            display: flex;
+            gap: 8px;
+        }
+        .elo-up {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .elo-down {
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .compare-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .btn-secondary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: var(--glass-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            transition: transform 0.2s var(--ease-spring), color 0.2s, border-color 0.2s;
+        }
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+            transform: scale(1.03);
+        }
+        .btn-secondary:active {
+            transform: scale(0.97);
+        }
+
+        /* === LEADERBOARD === */
+        .leaderboard-section {
+            padding: 120px 24px 80px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rank-card {
+            display: grid;
+            grid-template-columns: 56px 1fr auto;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: transform 0.4s var(--ease-spring), box-shadow 0.4s, border-color 0.3s, background 0.3s;
+            animation: rankCardIn 0.5s var(--ease-out-expo) both;
+            position: relative;
+        }
+        .rank-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-hover);
+        }
+        .rank-card.champion {
+            padding: 24px 32px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(245, 196, 81, 0.04) 100%);
+            border-color: rgba(245, 196, 81, 0.2);
+        }
+        .rank-card.champion:hover {
+            border-color: rgba(245, 196, 81, 0.35);
+            box-shadow: 0 8px 40px rgba(245, 196, 81, 0.08);
+        }
+        @keyframes rankCardIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .rank-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            background: var(--glass-bg);
+            border: 1px solid var(--border);
+            color: var(--text-tertiary);
+            transition: transform 0.3s var(--ease-spring);
+        }
+        .rank-card:hover .rank-badge {
+            transform: scale(1.08);
+        }
+        .rank-1 .rank-badge {
+            background: var(--gold-dim);
+            border-color: rgba(245, 196, 81, 0.3);
+            color: var(--gold);
+        }
+        .rank-2 .rank-badge {
+            background: rgba(192, 192, 210, 0.1);
+            border-color: rgba(192, 192, 210, 0.2);
+            color: #C0C0D2;
+        }
+        .rank-3 .rank-badge {
+            background: rgba(205, 127, 50, 0.1);
+            border-color: rgba(205, 127, 50, 0.2);
+            color: #CD7F32;
+        }
+        .champion .rank-badge {
+            width: 52px;
+            height: 52px;
+            font-size: 20px;
+            background: var(--gold-dim);
+            border-color: rgba(245, 196, 81, 0.4);
+            color: var(--gold);
+            box-shadow: 0 0 20px rgba(245, 196, 81, 0.15);
+        }
+
+        .rank-info {
+            min-width: 0;
+        }
+        .rank-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .champion .rank-name {
+            font-size: 18px;
+        }
+        .rank-meta {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .rank-score {
+            text-align: right;
+        }
+        .rank-elo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s;
+        }
+        .champion .rank-elo {
+            font-size: 32px;
+            color: var(--gold);
+        }
+        .rank-change {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+        }
+        .rank-change.up {
+            color: var(--success);
+        }
+        .rank-change.down {
+            color: var(--danger);
+        }
+        .rank-change.same {
+            color: var(--text-tertiary);
+        }
+
+        .champion-crown {
+            position: absolute;
+            top: -8px;
+            right: 24px;
+            font-size: 20px;
+            filter: drop-shadow(0 2px 4px rgba(245, 196, 81, 0.3));
+            animation: crownFloat 3s ease-in-out infinite;
+        }
+        @keyframes crownFloat {
+            0%,
+            100% {
+                transform: translateY(0) rotate(-3deg);
+            }
+            50% {
+                transform: translateY(-4px) rotate(3deg);
+            }
+        }
+
+        /* === METHODOLOGY === */
+        .methodology-section {
+            padding: 120px 24px 80px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .methodology-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .methodology-header .section-subtitle {
+            margin: 0 auto;
+        }
+
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            justify-items: center;
+        }
+
+        .method-card {
+            width: 100%;
+            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            transition: transform 0.4s var(--ease-spring), box-shadow 0.4s, border-color 0.3s;
+            animation: methodIn 0.6s var(--ease-out-expo) both;
+        }
+        .method-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        .method-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .method-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        .method-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+        .method-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+        .method-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+        @keyframes methodIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .method-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-hover);
+        }
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+}
+.btn-download:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  transform: scale(1.02);
+}
+.btn-download:active {
+  transform: scale(0.98);
+}
+.btn-download svg {
+  flex-shrink: 0;
+}
+        .method-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+            font-variant-numeric: tabular-nums;
+        }
+        .method-title {
+                font-family: "IBM Plex Mono", monospace;
+
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+        .method-desc {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    letter-spacing: 0.03em;
+    opacity: 0.8;
+}
+        .method-formula {
+            margin: 16px 0;
+            padding: 16px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        .method-formula code {
+            font-size: 14px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: var(--gold);
+            letter-spacing: 0.02em;
+        }
+
+        /* === ABOUT === */
+        .about-section {
+            padding: 120px 24px 80px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .about-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .about-card {
+            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            transition: transform 0.4s var(--ease-spring), box-shadow 0.4s, border-color 0.3s;
+            animation: aboutIn 0.6s var(--ease-out-expo) both;
+        }
+        .about-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        .about-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .about-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        .about-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+        @keyframes aboutIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .about-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-hover);
+        }
+        .about-card-title {
+                font-family: "IBM Plex Mono", monospace;
+
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+       .about-card-text {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+    opacity: 0.85;
+}
+        /* === ANIMATIONS === */
+        .stagger-in>* {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: staggerItem 0.5s var(--ease-out-expo) forwards;
+        }
+        .stagger-in>*:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+        .stagger-in>*:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        .stagger-in>*:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+        .stagger-in>*:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+        .stagger-in>*:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+        .stagger-in>*:nth-child(6) {
+            animation-delay: 0.3s;
+        }
+        .stagger-in>*:nth-child(7) {
+            animation-delay: 0.35s;
+        }
+        .stagger-in>*:nth-child(8) {
+            animation-delay: 0.4s;
+        }
+        @keyframes staggerItem {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .elo-animate {
+            animation: eloCountUp 0.6s var(--ease-out-expo);
+        }
+        @keyframes eloCountUp {
+            0% {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* === LOADING === */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: overlayIn 0.3s var(--ease-smooth);
+        }
+        [data-theme="light"] .loading-overlay {
+            background: rgba(250, 250, 250, 0.85);
+        }
+        @keyframes overlayIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .loading-content {
+            text-align: center;
+            width: 280px;
+        }
+
+        .loading-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            transition: width 0.4s var(--ease-out-expo);
+        }
+
+        .loading-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: opacity 0.3s;
+            min-height: 20px;
+        }
+        .loading-text.fade {
+            animation: textFade 0.4s ease-in-out;
+        }
+        @keyframes textFade {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* === LIGHT MODE === */
+        [data-theme="light"] .contender-card {
+            background: var(--bg-card);
+        }
+        [data-theme="light"] .btn-vote:hover {
+            background: rgba(79, 125, 255, 0.06);
+        }
+        [data-theme="light"] .rank-card.champion {
+            background: linear-gradient(135deg, #FFFFFF 0%, rgba(245, 196, 81, 0.06) 100%);
+        }
+
+        /* === SCROLL REVEAL (additive, works alongside existing page-load animations) === */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+        }
+        .reveal-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === ABOUT SECTION — ELEVATED === */
+        .about-section {
+            position: relative;
+            overflow: visible;
+        }
+        .about-glow {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(90px);
+            opacity: 0.55;
+            will-change: transform;
+        }
+        .about-glow-1 {
+            width: 340px;
+            height: 340px;
+            top: -60px;
+            right: -80px;
+            background: radial-gradient(circle, rgba(79, 125, 255, 0.25) 0%, transparent 70%);
+            animation: aboutGlowFloat1 14s ease-in-out infinite;
+        }
+        .about-glow-2 {
+            width: 300px;
+            height: 300px;
+            bottom: 0;
+            left: -90px;
+            background: radial-gradient(circle, rgba(245, 196, 81, 0.18) 0%, transparent 70%);
+            animation: aboutGlowFloat2 18s ease-in-out infinite;
+        }
+        @keyframes aboutGlowFloat1 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(-30px, 20px) scale(1.12);
+            }
+        }
+        @keyframes aboutGlowFloat2 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(25px, -25px) scale(1.08);
+            }
+        }
+
+        .about-particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            background: var(--accent);
+            opacity: 0.3;
+            animation: aboutParticleFloat 8s ease-in-out infinite;
+        }
+        @keyframes aboutParticleFloat {
+            0%,
+            100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.15;
+            }
+            50% {
+                transform: translateY(-18px) translateX(6px);
+                opacity: 0.45;
+            }
+        }
+
+        .about-header {
+            position: relative;
+        }
+        .about-header .section-title {
+            background: linear-gradient(120deg, var(--text-primary) 30%, var(--accent) 65%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: aboutTitleGradient 6s ease-in-out infinite;
+        }
+        @keyframes aboutTitleGradient {
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+            50% {
+                background-position: 100% center;
+            }
+        }
+
+        .about-card {
+            position: relative;
+            background: linear-gradient(180deg, var(--glass-bg-hover) 0%, var(--bg-card) 60%);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            overflow: hidden;
+            cursor: default;
+        }
+        .about-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 0%), var(--accent-dim), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+        .about-card:hover::before {
+            opacity: 1;
+        }
+        .about-card:hover {
+            border-color: var(--accent);
+        }
+
+        .about-card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            margin-bottom: 16px;
+            border-radius: var(--radius-md);
+            background: var(--accent-dim);
+            color: var(--accent);
+            transition: transform 0.4s var(--ease-spring), background 0.3s, color 0.3s;
+        }
+        .about-card:hover .about-card-icon {
+            transform: rotate(-8deg) scale(1.1);
+            background: var(--accent);
+            color: white;
+        }
+        .about-card:nth-child(2) .about-card-icon {
+            background: var(--gold-dim);
+            color: var(--gold);
+        }
+        .about-card:nth-child(2):hover .about-card-icon {
+            background: var(--gold);
+            color: #1a1a1a;
+        }
+        .about-card:nth-child(3) .about-card-icon {
+            background: rgba(57, 217, 138, 0.12);
+            color: var(--success);
+        }
+        .about-card:nth-child(3):hover .about-card-icon {
+            background: var(--success);
+            color: #05130c;
+        }
+        .about-card:nth-child(4) .about-card-icon {
+            background: rgba(255, 94, 94, 0.12);
+            color: var(--danger);
+        }
+        .about-card:nth-child(4):hover .about-card-icon {
+            background: var(--danger);
+            color: white;
+        }
+
+        .about-card-text p {
+            margin-bottom: 10px;
+        }
+        .about-card-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .about-card-title .title-underline {
+            display: block;
+            height: 2px;
+            width: 28px;
+            margin-top: 6px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            transition: width 0.4s var(--ease-out-expo);
+        }
+        .about-card:hover .title-underline {
+            width: 60px;
+        }
+
+        /* === MICRO-INTERACTIONS: RIPPLE === */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0);
+            animation: rippleAnim 0.6s var(--ease-out-expo);
+        }
+        [data-theme="light"] .ripple {
+            background: rgba(0, 0, 0, 0.15);
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(2.6);
+                opacity: 0;
+            }
+        }
+        .btn-generate,
+        .btn-vote,
+        .btn-secondary,
+        .nav-tab,
+        .theme-toggle {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* === CONFETTI (voting celebration) === */
+        .confetti-piece {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            pointer-events: none;
+            z-index: 5000;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            to {
+                transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        /* === TILT-READY CARDS === */
+        .contender-card,
+        .method-card,
+        .rank-card,
+        .about-card {
+            will-change: transform;
+        }
+
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* === CUSTOM CURSOR (desktop / fine-pointer only, decorative) === */
+        @media (pointer: fine) {
+            body,
+            a,
+            button,
+            textarea,
+            input,
+            .btn-generate,
+            .btn-vote,
+            .btn-secondary,
+            .nav-tab,
+            .theme-toggle,
+            .contender-card,
+            .about-card,
+            .method-card,
+            .rank-card {
+                cursor: none;
+            }
+        }
+        .cursor-dot,
+        .cursor-ring {
+            opacity: 0;
+        }
+        .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.25s, background 0.3s, width 0.2s, height 0.2s;
+        }
+        .cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.25s, width 0.3s var(--ease-spring), height 0.3s var(--ease-spring),
+                border-color 0.3s, background 0.3s;
+        }
+        .cursor-ring.cursor-hover {
+            width: 54px;
+            height: 54px;
+            border-color: var(--gold);
+            background: var(--gold-dim);
+        }
+        .cursor-ring.cursor-click {
+            width: 22px;
+            height: 22px;
+        }
+        .cursor-dot.cursor-visible,
+        .cursor-ring.cursor-visible {
+            opacity: 1;
+        }
+
+        /* === HERO — EXTRA DECORATION === */
+        .hero {
+            overflow: hidden;
+        }
+        .hero-piece-parallax {
+            pointer-events: none;
+            z-index: 0;
+            transition: transform 0.2s var(--ease-smooth);
+        }
+        .hero-piece {
+            display: inline-block;
+            color: var(--text-tertiary);
+            opacity: 0.12;
+            font-size: 42px;
+            animation: heroPieceFloat 10s ease-in-out infinite;
+            user-select: none;
+        }
+        [data-theme="light"] .hero-piece {
+            opacity: 0.1;
+        }
+        @keyframes heroPieceFloat {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-22px) rotate(8deg);
+            }
+        }
+       .hero-content {
+    position: relative;
+    z-index: 1;
+}
+        .hero-parallax {
+            transition: transform 0.2s var(--ease-smooth);
+        }
+
+        .hero-badge {
+            position: relative;
+        }
+        .hero-badge::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius-pill);
+            padding: 1px;
+            background: linear-gradient(120deg, var(--accent), transparent, var(--gold));
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+            animation: aboutTitleGradient 5s ease-in-out infinite;
+        }
+
+        .stat {
+            transition: transform 0.3s var(--ease-spring);
+            border-radius: var(--radius-md);
+            padding: 4px 10px;
+        }
+        .stat:hover {
+            transform: translateY(-3px);
+        }
+        .stat:hover .stat-number {
+            background: linear-gradient(120deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+       .hero-input-wrap {
+    position: relative;
+    width: min(100%, 760px);
+    margin-left: auto;
+    margin-right: auto;
+}
+        .hero-input-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: calc(var(--radius-lg) + 2px);
+            background: linear-gradient(120deg, var(--accent), var(--gold), var(--success));
+            opacity: 0;
+            filter: blur(14px);
+            z-index: -1;
+            transition: opacity 0.4s;
+        }
+        .hero-input-wrap:focus-within::before {
+            opacity: 0.35;
+        }
+
+        /* === METHODOLOGY — STEP FLOW DECORATION === */
+        .methodology-grid {
+            position: relative;
+            counter-reset: none;
+        }
+        .method-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s var(--ease-out-expo);
+        }
+        .method-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .method-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 14px;
+            border-radius: var(--radius-md);
+            background: var(--accent-dim);
+            color: var(--accent);
+            transition: transform 0.4s var(--ease-spring), background 0.3s, color 0.3s;
+        }
+        .method-card:hover .method-icon {
+            transform: scale(1.12) rotate(-6deg);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .method-formula {
+            position: relative;
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
+        .method-card:hover .method-formula {
+            border-color: var(--gold);
+            box-shadow: 0 0 24px rgba(245, 196, 81, 0.12);
+        }
+
+        .method-step-connector {
+            position: absolute;
+            z-index: -1;
+            border-left: 1.5px dashed var(--border);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 900px) {
+            .compare-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .vs-divider {
+                order: 0;
+            }
+            .vs-text {
+                width: 40px;
+                height: 40px;
+                font-size: 11px;
+            }
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            .methodology-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-bar {
+                top: 8px;
+                max-width: calc(100% - 16px);
+            }
+            .nav-inner {
+                padding: 4px 6px 4px 12px;
+                gap: 4px;
+            }
+            .nav-logo span {
+                display: none;
+            }
+            .nav-logo {
+                border-right: none;
+                padding-right: 4px;
+                margin-right: 0;
+            }
+            .nav-tab {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .hero {
+                padding: 100px 16px 60px;
+            }
+            .hero-input-wrap {
+                flex-direction: column;
+            }
+            .btn-generate {
+                width: 100%;
+                justify-content: center;
+            }
+            .hero-stats {
+                gap: 20px;
+                margin-top: 48px;
+            }
+            .stat-number {
+                font-size: 22px;
+            }
+            .compare-section,
+            .leaderboard-section,
+            .methodology-section,
+            .about-section {
+                padding: 100px 16px 60px;
+            }
+            .rank-card {
+                grid-template-columns: 44px 1fr auto;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            .rank-badge {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+            .rank-elo {
+                font-size: 20px;
+            }
+            .champion .rank-elo {
+                font-size: 24px;
+            }
+            .compare-actions {
+                flex-direction: column;
+            }
+            .btn-secondary {
+                justify-content: center;
+            }
+        }
+
+        /* ─── NEW: HOMEPAGE FOOTER & PROVIDERS ─── */
+        .home-footer {
+            padding: 60px 24px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 0;
+        }
+        .home-footer .footer-providers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .home-footer .provider-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px 6px 14px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.25s var(--ease-spring), background 0.3s, border-color 0.3s, box-shadow 0.3s;
+            letter-spacing: 0.01em;
+        }
+        .home-footer .provider-chip:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: var(--glass-bg-hover);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-sm);
+            color: var(--text-primary);
+        }
+        .home-footer .provider-chip .chip-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--accent);
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .home-footer .provider-chip:hover .chip-dot {
+            opacity: 1;
+        }
+        .home-footer .provider-chip .chip-icon {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .home-footer .footer-divider {
+            width: 60px;
+            height: 1px;
+            margin: 16px auto 20px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .home-footer .footer-powered {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            letter-spacing: 0.04em;
+            transition: color 0.3s;
+        }
+        .home-footer .footer-powered strong {
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: linear-gradient(120deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: background-position 0.4s;
+        }
+        .home-footer .footer-powered:hover strong {
+            background-position: 100% center;
+        }
+
+        /* ─── NEW: VOTE RESULT — WINNER / LOSER ─── */
+        .result-winner-loser {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .result-winner-loser .wl-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-winner-loser .wl-label {
+            font-weight: 600;
+            color: var(--text-tertiary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-width: 44px;
+            text-align: right;
+        }
+        .result-winner-loser .wl-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .result-winner-loser .wl-name.win {
+            color: var(--success);
+        }
+        .result-winner-loser .wl-name.lose {
+            color: var(--danger);
+            opacity: 0.7;
+        }
+        .result-winner-loser .wl-arrow {
+            font-size: 12px;
+            opacity: 0.4;
+        }
+
+        /* responsive tweaks for the new result layout */
+        @media (max-width: 560px) {
+            .result-inner {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px 16px;
+                padding: 14px 18px;
+            }
+            .result-winner-loser {
+                align-items: center;
+                width: 100%;
+            }
+            .result-winner-loser .wl-row {
+                width: 100%;
+                justify-content: center;
+            }
+            .result-winner-loser .wl-label {
+                min-width: 36px;
+                font-size: 10px;
+            }
+            .result-winner-loser .wl-name {
+                font-size: 13px;
+            }
+            .elo-change {
+                font-size: 13px;
+            }
+        }
+
+        /* extra subtle glow for the result block */
+        .vote-result .result-inner {
+            position: relative;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .vote-result .result-inner.has-winner {
+            border-color: var(--success);
+            box-shadow: 0 0 24px rgba(57, 217, 138, 0.06);
+        }
+    </style>
+    <style>
+        /* =========================================================
+           GENERATION LOADING UX — additive styles only.
+           Reuses existing tokens (--accent, --gold, --danger, --border,
+           --radius-pill, --ease-spring, etc.) already defined above.
+           Nothing in the original stylesheet is modified.
+           ========================================================= */
+        .eden-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-right-color: var(--gold);
+            animation: edenSpin 0.85s linear infinite;
+        }
+        @keyframes edenSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .eden-error-icon {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 16px;
+            color: var(--danger);
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-overlay.eden-error .eden-spinner {
+            display: none;
+        }
+        .loading-overlay.eden-error .eden-error-icon {
+            display: flex;
+        }
+        .loading-overlay.eden-error .loading-bar {
+            opacity: 0.4;
+        }
+        .loading-overlay.eden-error .loading-text {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .eden-retry-btn {
+            display: none;
+            margin: 20px auto 0;
+            padding: 10px 22px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.2s var(--ease-spring), background 0.2s, border-color 0.2s;
+        }
+        .eden-retry-btn:hover {
+            background: var(--glass-bg-hover);
+            border-color: var(--border-hover);
+            transform: scale(1.03);
+        }
+        .eden-retry-btn:active {
+            transform: scale(0.97);
+        }
+        .loading-overlay.eden-error .eden-retry-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-generate:disabled,
+        .btn-secondary:disabled {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Decorative custom cursor (desktop only, purely visual) -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Chess grid background -->
+    <div class="chess-grid" id="chessGrid"></div>
+
+    <!-- Gradient orbs -->
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar" id="navBar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo" id="navLogo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="logo-icon">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                </svg>
+                <span>Eden</span>
+            </a>
+            <div class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-page="hero" id="tabHero">Home</button>
+                <button class="nav-tab" data-page="compare" id="tabCompare">Compare</button>
+                <button class="nav-tab" data-page="leaderboard" id="tabLeaderboard">Leaderboard</button>
+                <button class="nav-tab" data-page="methodology" id="tabMethodology">Methodology</button>
+                <button class="nav-tab" data-page="about" id="tabAbout">About</button>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Page -->
+    <main class="page active" id="pageHero">
+        <section class="hero" id="heroSection">
+            <div class="hero-piece-parallax" style="position:absolute; top:14%; left:8%;"><span class="hero-piece" style="animation-delay:0s;">♔</span></div>
+            <div class="hero-piece-parallax" style="position:absolute; top:22%; right:10%;"><span class="hero-piece" style="animation-delay:1.5s; font-size:34px;">♛</span></div>
+            <div class="hero-piece-parallax" style="position:absolute; bottom:18%; left:14%;"><span class="hero-piece" style="animation-delay:3s; font-size:30px;">♞</span></div>
+            <div class="hero-piece-parallax" style="position:absolute; bottom:12%; right:16%;"><span class="hero-piece" style="animation-delay:4.5s;">♜</span></div>
+            <div class="hero-content" id="heroContentParallax">
+                <h1 class="hero-title" id="heroTitle">The Arena for<br>AI Video and Image Models</h1>
+                <p class="hero-subtitle" id="heroSubtitle">  Blind comparisons Fair rankings Powered by Elo</p>
+                <div class="battle-mode-toggle" id="battleModeToggle" role="tablist" aria-label="Battle mode">
+                    <button type="button" class="mode-btn active" data-mode="video" id="modeVideoBtn" role="tab" aria-selected="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        Video
+                    </button>
+                    <button type="button" class="mode-btn" data-mode="image" id="modeImageBtn" role="tab" aria-selected="false">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Image
+                    </button>
+                </div>
+                <div class="hero-input-wrap" id="heroInputWrap">
+                    <textarea class="hero-input" id="promptInput" placeholder="Describe a video scenario to battle..." rows="1"></textarea>
+                    <button class="btn-generate" id="btnGenerate">
+                        <span class="btn-text">Generate Battle</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+                <div class="hero-stats" id="heroStats">
+                    <div class="stat"><span class="stat-number" id="statBattles">2,847</span><span class="stat-label">Battles</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat"><span class="stat-number" id="statModels">8</span><span class="stat-label">Models</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat"><span class="stat-number" id="statVotes">14,203</span><span class="stat-label">Votes</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── NEW: HOMEPAGE FOOTER ─── -->
+        <footer class="home-footer" id="homeFooter">
+            <div class="footer-providers" id="footerProviders">
+                <!-- provider chips injected by JS -->
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-powered">
+                Powered by <strong>Eden AI</strong>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Compare Page -->
+    <main class="page" id="pageCompare">
+        <section class="compare-section" id="compareSection">
+            <div class="compare-header">
+                <h2 class="section-title" id="compareTitle">Arena Battle</h2>
+                <p class="section-subtitle" id="compareSubtitle">Watch two AI models compete. Vote for the better video.</p>
+            </div>
+            <div class="compare-prompt-display" id="comparePromptDisplay">
+                <span class="prompt-label">Prompt</span>
+                <span class="prompt-text" id="currentPrompt">waiting for your prompt.</span>
+            </div>
+            <div class="compare-grid" id="compareGrid">
+                <div class="contender-card" id="contenderA" data-contender="A">
+                    <div class="contender-header">
+                        <span class="contender-label" id="contenderALabel">Contender A</span>
+                        <span class="contender-elo" id="eloA">1520</span>
+                    </div>
+                    <div class="video-container" id="videoContainerA">
+                        <div class="video-placeholder" id="videoPlaceholderA">
+                            <div class="video-play-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                            <div class="video-shimmer"></div>
+                        </div>
+                        <video id="videoA" muted loop playsinline autoplay></video>
+                        <img id="imageA" alt="">
+                    </div>
+                    <button class="btn-download" id="downloadA" style="display:none; margin-top:10px; width:100%;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span id="downloadALabel">Download Video</span>
+</button>
+                    <button class="btn-vote" id="voteA" data-vote="A" disabled>
+                        <span class="vote-icon">♔</span>
+                        <span class="vote-text">Vote for A</span>
+                    </button>
+                </div>
+                <div class="vs-divider" id="vsDivider">
+                    <span class="vs-text">VS</span>
+                </div>
+                <div class="contender-card" id="contenderB" data-contender="B">
+                    <div class="contender-header">
+                        <span class="contender-label" id="contenderBLabel">Contender B</span>
+                        <span class="contender-elo" id="eloB">1485</span>
+                    </div>
+                    <div class="video-container" id="videoContainerB">
+                        <div class="video-placeholder" id="videoPlaceholderB">
+                            <div class="video-play-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                            <div class="video-shimmer"></div>
+                        </div>
+                        <video id="videoB" muted loop playsinline autoplay></video>
+                        <img id="imageB" alt="">
+                    </div>
+                    <button class="btn-download" id="downloadB" style="display:none; margin-top:10px; width:100%;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span id="downloadBLabel">Download Video</span>
+</button>
+                    <button class="btn-vote" id="voteB" data-vote="B" disabled>
+                        <span class="vote-icon">♔</span>
+                        <span class="vote-text">Vote for B</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ─── MODIFIED: vote result with Winner / Loser ─── -->
+            <div class="vote-result" id="voteResult" style="display:none">
+                <div class="result-inner" id="resultInner">
+                    <span class="result-icon" id="resultIcon">♛</span>
+                    <div class="result-winner-loser" id="resultWinnerLoser">
+                        <div class="wl-row">
+                            <span class="wl-label">Winner</span>
+                            <span class="wl-name win" id="resultWinnerName">—</span>
+                        </div>
+                        <div class="wl-row">
+                            <span class="wl-label">Loser</span>
+                            <span class="wl-name lose" id="resultLoserName">—</span>
+                        </div>
+                    </div>
+                    <div class="elo-change" id="eloChange">
+                        <span class="elo-up" id="eloUp">+12</span>
+                        <span class="elo-down" id="eloDown">-12</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compare-actions" id="compareActions" style="display:none">
+                <button class="btn-secondary" id="btnNewBattle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    New Battle
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Leaderboard Page -->
+    <main class="page" id="pageLeaderboard">
+        <section class="leaderboard-section" id="leaderboardSection">
+            <div class="leaderboard-header">
+                <h2 class="section-title" id="leaderboardTitle">Rankings</h2>
+                <p class="section-subtitle" id="leaderboardSubtitle">Live Elo ratings. Updated after every battle.</p>
+            </div>
+            <div class="leaderboard-list" id="leaderboardList"></div>
+        </section>
+    </main>
+
+    <!-- Methodology Page -->
+    <main class="page" id="pageMethodology">
+        <section class="methodology-section" id="methodologySection">
+            <div class="methodology-header">
+                <h2 class="section-title" id="methodologyTitle">Methodology</h2>
+                <p class="section-subtitle" id="methodologySubtitle">How the Elo rating system determines the best AI video model.</p>
+            </div>
+            <div class="methodology-grid" id="methodologyGrid">
+                <div class="method-card" id="methodCard1">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <div class="method-number">01</div>
+                    <h3 class="method-title">Blind Comparison</h3>
+                    <p class="method-desc">Two AI models generate videos or images from the same prompt. Viewers see both videos without knowing which model produced which ensuring pure quality judgment.</p>
+                </div>
+                <div class="method-card" id="methodCard2">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/></svg></div>
+                    <div class="method-number">02</div>
+                    <h3 class="method-title">Elo Rating System</h3>
+                    <p class="method-desc">Originally designed for chess, the Elo system calculates relative skill levels. Winners gain points, losers lose points. The magnitude depends on the expected outcome.</p>
+                </div>
+                <div class="method-card" id="methodCard3">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg></div>
+                    <div class="method-number">03</div>
+                    <h3 class="method-title">Expected Score</h3>
+                    <div class="method-formula" id="methodFormula">
+                        <code>E_A = 1 / (1 + 10^((R_B - R_A) / 400))</code>
+                    </div>
+                    <p class="method-desc">The expected score predicts how likely a model is to win based on current ratings. Upsetting a higher rated model yields more points.</p>
+                </div>
+                <div class="method-card" id="methodCard4">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
+                    <div class="method-number">04</div>
+                    <h3 class="method-title">Rating Update</h3>
+                    <div class="method-formula" id="methodFormula2">
+                        <code>R'_A = R_A + K × (S_A - E_A)</code>
+                    </div>
+                    <p class="method-desc">After each battle, ratings update using the K-factor (set to 32). The actual result is compared against expectations to produce the new rating.</p>
+                </div>
+                <div class="method-card" id="methodCard5">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></div>
+                    <div class="method-number">05</div>
+                    <h3 class="method-title">Convergence</h3>
+                    <p class="method-desc">Over hundreds of battles, ratings stabilize to reflect true model strength. The more battles a model participates in, the more reliable its rating becomes.</p>
+                </div>
+                <div class="method-card" id="methodCard6">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                    <div class="method-number">06</div>
+                    <h3 class="method-title">Fairness Guarantees</h3>
+                    <p class="method-desc">Models are randomly paired. Prompt diversity prevents specialization. Blind voting eliminates brand bias. The system is mathematically self-correcting.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- About Page -->
+    <main class="page" id="pageAbout">
+        <section class="about-section" id="aboutSection">
+            <div class="about-glow about-glow-1"></div>
+            <div class="about-glow about-glow-2"></div>
+            <div class="about-header">
+                <h2 class="section-title" id="aboutTitle">About Eden AI</h2>
+                <p class="section-subtitle" id="aboutSubtitle">Building the definitive benchmark for AI video generation.</p>
+            </div>
+            <div class="about-content" id="aboutContent">
+                <div class="about-card" id="aboutCard1">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    </div>
+                    <h3 class="about-card-title">The Mission<span class="title-underline"></span></h3>
+                    <p class="about-card-text">AI video and image generation are evolving at an incredible pace. But one question remains: which AI model is actually the best?
+
+Most benchmarks today are unreliable  they can be biased, selectively curated, or disconnected from real world quality.
+
+Eden Arena solves this by introducing a crowd powered evaluation platform where AI models compete head to head under identical conditions. From cinematic videos to creative images, every model is judged through fair comparisons and real human feedback.</p>
+                </div>
+                <div class="about-card" id="aboutCard2">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/></svg>
+                    </div>
+                    <h3 class="about-card-title">Why Elo?<span class="title-underline"></span></h3>
+                    <p class="about-card-text">The Elo rating system has been the standard for competitive ranking since the 1960s. It powers systems like chess, esports, and matchmaking platforms around the world.
+
+By adapting Elo to AI video and image generation, we create a ranking system that is:
+
+Fair · Dynamic · Self correcting over time
+
+Every vote improves the rankings, making the system smarter with each battle.</p>
+                </div>
+                <div class="about-card" id="aboutCard3">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h3 class="about-card-title">Open &amp; Transparent<span class="title-underline"></span></h3>
+                    <p class="about-card-text">All battle results are public. Ratings are updated continuously. The methodology is designed around transparency and community participation.
+
+We believe the best way to evaluate AI generation is through open competition, unbiased comparisons, and the collective judgment of the community.</p>
+                </div>
+                <div class="about-card" id="aboutCard4">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </div>
+                    <h3 class="about-card-title">Get Involved<span class="title-underline"></span></h3>
+                    <p class="about-card-text">Every vote matters. Whether you're a researcher, developer, creator, or AI enthusiast, your judgment helps shape the future of AI generation.
+
+Join the arena, compare the world's leading AI video and image models, cast your votes, and help determine which models truly stand above the rest.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display:none">
+        <div class="loading-content">
+            <div class="eden-spinner" id="edenSpinner"></div>
+            <svg class="eden-error-icon" id="edenErrorIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <div class="loading-bar"><div class="loading-progress" id="loadingProgress"></div></div>
+            <p class="loading-text" id="loadingText">Generating...</p>
+            <button class="eden-retry-btn" id="edenRetryBtn" type="button">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        /* === JAVASCRIPT === */
+
+        // ========== APP STATE & DATA ==========
+        const state = {
+            currentPage: "hero",
+            battles: 0,
+            votes: 0,
+            currentBattle: null,
+            hasVoted: false
+        };
+        state.battleMode = 'video'; // Image mode addition — 'video' keeps existing behavior unchanged
+        // NOTE: this is now just fallback/decorative data for the hero stat counters
+
+        // leaderboard anymore — those all come from the real backend.
+        let modelCountForStats = 7;
+
+        const videoColors = [
+            'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+            'linear-gradient(135deg, #2d1b69 0%, #11998e 100%)',
+            'linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 50%, #2d2d5e 100%)',
+            'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+            'linear-gradient(135deg, #0f0f23 0%, #1a1a40 50%, #333370 100%)',
+            'linear-gradient(135deg, #141e30 0%, #243b55 100%)'
+        ];
+
+        // Change this if your backend runs somewhere other than localhost:5000
+        const VIDEO_API = "http://localhost:5001/api/video";
+const ARENA_API = "http://localhost:5001/api/arena";
+const IMAGE_API = "http://localhost:5001/api/image"; // Image mode addition
+
+        // ========== HELPERS ==========
+        function showVideoError(el, message) {
+            if (!el) return;
+            el.innerHTML = `
+            <div class="video-error">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span>${message}</span>
+            </div>
+          `;
+        }
+
+        // ========== LEADERBOARD ==========
+        async function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            if (!list) return;
+            list.innerHTML = '<p style="color:var(--text-tertiary);text-align:center;padding:24px 0;">Loading rankings...</p>';
+
+            try {
+                const endpoint =
+    state.battleMode === "image"
+        ? `${ARENA_API}/leaderboard/image`
+        : `${ARENA_API}/leaderboard/video`;
+
+const res = await fetch(endpoint);
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || "Failed to load leaderboard");
+
+                list.innerHTML = '';
+                data.leaderboard.forEach((model, index) => {
+                    const rank = index + 1;
+                    const card = document.createElement('div');
+                    card.className = 'rank-card' + (rank === 1 ? ' rank-1 champion' : rank === 2 ? ' rank-2' :
+                        rank === 3 ? ' rank-3' : '');
+                    const battles = (model.wins || 0) + (model.losses || 0);
+                    card.innerHTML = `
+                <div class="rank-badge">${rank}</div>
+                <div class="rank-info">
+                  <div class="rank-name">${model.name}</div>
+                  <div class="rank-meta">
+                    <span>${model.provider}</span>
+                    <span>${model.wins}W / ${model.losses}L</span>
+                    <span>Battles: ${battles}</span>
+                  </div>
+                </div>
+                <div class="rank-score">
+                  <div class="rank-elo">${Math.round(model.elo_rating)}</div>
+                </div>
+                ${rank === 1 ? '<div class="champion-crown">👑</div>' : ''}
+              `;
+                    list.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Leaderboard error:", err);
+                list.innerHTML =
+                    '<p style="color:var(--danger);text-align:center;padding:24px 0;">Could not load leaderboard. Is the server running on ' +
+                    ARENA_API + '?</p>';
+            }
+        }
+
+        // ========== NAVIGATION ==========
+        function navigateTo(page) {
+            if (state.currentPage === page) return;
+            state.currentPage = page;
+
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.page === page);
+            });
+
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+            const pageMap = {
+                hero: 'pageHero',
+                compare: 'pageCompare',
+                leaderboard: 'pageLeaderboard',
+                methodology: 'pageMethodology',
+                about: 'pageAbout'
+            };
+
+            const target = document.getElementById(pageMap[page]);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            if (page === 'leaderboard') renderLeaderboard();
+        }
+
+        document.getElementById('navTabs')?.addEventListener('click', (e) => {
+            const tab = e.target.closest('.nav-tab');
+            if (tab) navigateTo(tab.dataset.page);
+        });
+
+        document.getElementById('navLogo')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo('hero');
+        });
+
+        // ========== THEME ==========
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('Eden-theme', next);
+        }
+
+        document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+        (() => {
+            const saved = localStorage.getItem('Eden-theme');
+            if (saved) document.documentElement.setAttribute('data-theme', saved);
+        })();
+
+        // ========== HERO INPUT ==========
+        const promptInput = document.getElementById('promptInput');
+
+        promptInput?.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        document.getElementById('btnGenerate')?.addEventListener('click', () => {
+            const prompt = promptInput?.value.trim();
+
+            if (!prompt) {
+                alert("Please enter a prompt.");
+                return;
+            }
+            if (promptInput) {
+                promptInput.value = "";
+                promptInput.style.height = "auto";
+            }
+
+            startBattle(prompt);
+        });
+
+        promptInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('btnGenerate')?.click();
+            }
+        });
+
+        // ========== BATTLE MODE TOGGLE (Image mode addition) ==========
+        const modeVideoBtn = document.getElementById('modeVideoBtn');
+        const modeImageBtn = document.getElementById('modeImageBtn');
+
+        function setBattleMode(mode) {
+            state.battleMode = mode;
+            const isImage = mode === 'image';
+
+            if (modeVideoBtn) {
+                modeVideoBtn.classList.toggle('active', !isImage);
+                modeVideoBtn.setAttribute('aria-selected', String(!isImage));
+            }
+            if (modeImageBtn) {
+                modeImageBtn.classList.toggle('active', isImage);
+                modeImageBtn.setAttribute('aria-selected', String(isImage));
+            }
+            if (promptInput) {
+                promptInput.placeholder = isImage
+                    ? 'Describe an image scenario to battle...'
+                    : 'Describe a video scenario to battle...';
+            }
+
+            const compareTitleEl = document.getElementById('compareTitle');
+            const compareSubtitleEl = document.getElementById('compareSubtitle');
+            if (compareTitleEl) compareTitleEl.textContent = isImage ? 'Image Arena Battle' : 'Arena Battle';
+            if (compareSubtitleEl) {
+                compareSubtitleEl.textContent = isImage
+                    ? 'Watch two AI models compete. Vote for the better image.'
+                    : 'Watch two AI models compete. Vote for the better video.';
+            }
+
+            const downloadALabel = document.getElementById('downloadALabel');
+            const downloadBLabel = document.getElementById('downloadBLabel');
+            if (downloadALabel) downloadALabel.textContent = isImage ? 'Download Image' : 'Download Video';
+            if (downloadBLabel) downloadBLabel.textContent = isImage ? 'Download Image' : 'Download Video';
+        renderLeaderboard();
+        loadStats();
+        }
+        async function loadStats() {
+    try {
+        const res = await fetch(`${ARENA_API}/stats`);
+        const data = await res.json();
+
+        if (!data.success) return;
+state.battles = Number(data.battles || 0);
+state.votes = Number(data.votes || 0);
+modelCountForStats = Number(data.models || 0);
+
+document.getElementById("statBattles").textContent = state.battles;
+document.getElementById("statVotes").textContent = state.votes;
+document.getElementById("statModels").textContent = modelCountForStats;
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+        modeVideoBtn?.addEventListener('click', () => setBattleMode('video'));
+        modeImageBtn?.addEventListener('click', () => setBattleMode('image'));
+
+        // ========== COUNTERS ==========
+        function animateCounter(el, target, duration) {
+            const startTime = performance.now();
+
+            function step(now) {
+                const t = Math.min((now - startTime) / duration, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+                el.textContent = Math.round(eased * target).toLocaleString();
+                if (t < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const statBattles = document.getElementById('statBattles');
+                const statModels = document.getElementById('statModels');
+                const statVotes = document.getElementById('statVotes');
+                if (statBattles) animateCounter(statBattles, state.battles, 2000);
+                if (statModels) animateCounter(statModels, modelCountForStats, 1500);
+                if (statVotes) animateCounter(statVotes, state.votes, 2500);
+                statsObserver.disconnect();
+            });
+        }, { threshold: 0.5 });
+        const heroStatsEl = document.getElementById('heroStats');
+        if (heroStatsEl) statsObserver.observe(heroStatsEl);
+
+        // ========== BATTLE ==========
+
+
+        async function startBattle(prompt) {
+            if (state.battleMode === 'image') { return startImageBattle(prompt); } // Image mode addition
+            navigateTo('compare');
+
+            state.currentBattle = null;
+            state.hasVoted = false;
+            const actions = document.getElementById("compareActions");
+            if (actions) actions.style.display = "none";
+            document.getElementById('downloadA').style.display = 'none';
+document.getElementById('downloadB').style.display = 'none';
+            // Safely grab elements
+            const currentPromptEl = document.getElementById('currentPrompt');
+            const eloAEl = document.getElementById('eloA');
+            const eloBEl = document.getElementById('eloB');
+            const placeholderAEl = document.getElementById('videoPlaceholderA');
+            const placeholderBEl = document.getElementById('videoPlaceholderB');
+            const voteAEl = document.getElementById('voteA');
+            const voteBEl = document.getElementById('voteB');
+            const contenderAEl = document.getElementById('contenderA');
+            const contenderBEl = document.getElementById('contenderB');
+            const voteResultEl = document.getElementById('voteResult');
+            const videoAEl = document.getElementById('videoA');
+            const videoBEl = document.getElementById('videoB');
+
+            if (currentPromptEl) currentPromptEl.textContent = prompt;
+            if (eloAEl) eloAEl.textContent = '—';
+            if (eloBEl) eloBEl.textContent = '—';
+
+            if (placeholderAEl) placeholderAEl.style.background = videoColors[Math.floor(Math.random() * videoColors
+            .length)];
+            if (placeholderBEl) placeholderBEl.style.background = videoColors[Math.floor(Math.random() * videoColors
+            .length)];
+
+            if (voteAEl) voteAEl.classList.remove('voted');
+            if (voteBEl) voteBEl.classList.remove('voted');
+            if (contenderAEl) contenderAEl.classList.remove('winner', 'loser');
+            if (contenderBEl) contenderBEl.classList.remove('winner', 'loser');
+            if (voteResultEl) voteResultEl.style.display = 'none';
+            // also reset the winner/loser text
+            const wName = document.getElementById('resultWinnerName');
+            const lName = document.getElementById('resultLoserName');
+            if (wName) wName.textContent = '—';
+            if (lName) lName.textContent = '—';
+            const inner = document.getElementById('resultInner');
+            if (inner) inner.classList.remove('has-winner');
+
+            // Reset placeholders, hide videos
+            if (videoAEl) { videoAEl.removeAttribute('src');
+                videoAEl.style.display = 'none'; }
+            if (videoBEl) { videoBEl.removeAttribute('src');
+                videoBEl.style.display = 'none'; }
+            // Image mode addition — clear any leftover image from a previous Image battle
+            const imageAElReset = document.getElementById('imageA');
+            const imageBElReset = document.getElementById('imageB');
+            if (imageAElReset) { imageAElReset.removeAttribute('src'); imageAElReset.style.display = 'none'; }
+            if (imageBElReset) { imageBElReset.removeAttribute('src'); imageBElReset.style.display = 'none'; }
+            if (placeholderAEl) {
+                placeholderAEl.style.display = 'flex';
+                placeholderAEl.innerHTML =
+                    '<div class="video-play-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="video-shimmer"></div>';
+            }
+            if (placeholderBEl) {
+                placeholderBEl.style.display = 'flex';
+                placeholderBEl.innerHTML =
+                    '<div class="video-play-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><div class="video-shimmer"></div>';
+            }
+
+            // Disable voting while loading
+            if (voteAEl) voteAEl.disabled = true;
+            if (voteBEl) voteBEl.disabled = true;
+
+            try {
+                const res = await fetch(`${VIDEO_API}/generate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await res.json();
+console.log("Stats response:", data);
+                if (data.success) {
+
+                    // This is the real battle returned by the server — store it so
+                    // handleVote() can send the correct battle_id back for scoring.
+                    state.currentBattle = {
+                        battle_id: data.battle_id,
+                        model_a_name: data.model_a_name,
+                        model_b_name: data.model_b_name,
+                        elo_a: data.elo_a,
+                        elo_b: data.elo_b
+                    };
+                    const contenderANameEl = document.getElementById('contenderAName');
+                    const contenderBNameEl = document.getElementById('contenderBName');
+
+                    if (contenderANameEl) {
+                        contenderANameEl.textContent = data.model_a_name;
+                    }
+
+                    if (contenderBNameEl) {
+                        contenderBNameEl.textContent = data.model_b_name;
+                    }
+                    if (eloAEl) eloAEl.textContent = Math.round(Number(data.elo_a || 0));
+                    if (eloBEl) eloBEl.textContent = Math.round(Number(data.elo_b || 0));
+
+                    // VIDEO A
+                    if (data.output_a?.success) {
+
+                        videoAEl.src = data.output_a.url;
+                        videoAEl.style.display = "block";
+                        videoAEl.load();
+
+                        await new Promise(resolve => {
+                            videoAEl.onloadeddata = resolve;
+                        });
+
+                        await videoAEl.play().catch(() => {});
+
+                        if (placeholderAEl) {
+                            placeholderAEl.style.display = "none";
+                       const downloadA = document.getElementById('downloadA');
+downloadA.style.display = 'flex';
+downloadA.onclick = function(e) {
+  e.preventDefault();
+  const a = document.createElement('a');
+  a.href = videoAEl.src;
+  a.download = 'video_A.mp4';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+                          }
+
+                    } else {
+
+                        showVideoError(
+                            placeholderAEl,
+                            data.output_a?.error || "Video A generation failed."
+                        );
+
+                    }
+
+
+                    // VIDEO B
+                    if (data.output_b?.success) {
+
+                        videoBEl.src = data.output_b.url;
+                        videoBEl.style.display = "block";
+                        videoBEl.load();
+
+                        await new Promise(resolve => {
+                            videoBEl.onloadeddata = resolve;
+                        });
+
+                        await videoBEl.play().catch(() => {});
+
+                        if (placeholderBEl) {
+                            placeholderBEl.style.display = "none";
+                            const downloadB = document.getElementById('downloadB');
+downloadB.style.display = 'flex';
+downloadB.onclick = function(e) {
+  e.preventDefault();
+  const a = document.createElement('a');
+  a.href = videoBEl.src;
+  a.download = 'video_B.mp4';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+                        }
+
+                    } else {
+
+                        showVideoError(
+                            placeholderBEl,
+                            data.output_b?.error || "Video B generation failed."
+                        );
+
+                    }
+
+
+                    // Enable voting only if BOTH videos generated
+                    const canVote =
+                        data.output_a?.success &&
+                        data.output_b?.success;
+
+                    if (voteAEl) voteAEl.disabled = !canVote;
+                    if (voteBEl) voteBEl.disabled = !canVote;
+
+                } else {
+                    console.error("Generation failed:", data.error);
+                    showVideoError(placeholderAEl, "Unable to generate videos.<br>Please try again.");
+                    showVideoError(placeholderBEl, "Unable to generate videos.<br>Please try again.");
+                }
+
+            } catch (err) {
+                console.error("Backend not reachable:", err);
+                showVideoError(placeholderAEl, "Cannot connect to server.<br>Please try again.");
+                showVideoError(placeholderBEl, "Cannot connect to server.<br>Please try again.");
+            }
+        }
+
+        // Image mode addition — mirrors startBattle() above 1:1, but calls IMAGE_API
+        // and drives the imageA/imageB <img> elements instead of videoA/videoB.
+        // Voting reuses handleVote()/ARENA_API unchanged (battle_id already carries
+        // the type on the backend), so nothing below duplicates that logic.
+        async function startImageBattle(prompt) {
+            navigateTo('compare');
+
+            state.currentBattle = null;
+            state.hasVoted = false;
+            const actions = document.getElementById("compareActions");
+            if (actions) actions.style.display = "none";
+            document.getElementById('downloadA').style.display = 'none';
+            document.getElementById('downloadB').style.display = 'none';
+
+            const currentPromptEl = document.getElementById('currentPrompt');
+            const eloAEl = document.getElementById('eloA');
+            const eloBEl = document.getElementById('eloB');
+            const placeholderAEl = document.getElementById('videoPlaceholderA');
+            const placeholderBEl = document.getElementById('videoPlaceholderB');
+            const voteAEl = document.getElementById('voteA');
+            const voteBEl = document.getElementById('voteB');
+            const contenderAEl = document.getElementById('contenderA');
+            const contenderBEl = document.getElementById('contenderB');
+            const voteResultEl = document.getElementById('voteResult');
+            const imageAEl = document.getElementById('imageA');
+            const imageBEl = document.getElementById('imageB');
+            const videoAEl = document.getElementById('videoA');
+            const videoBEl = document.getElementById('videoB');
+
+            if (currentPromptEl) currentPromptEl.textContent = prompt;
+            if (eloAEl) eloAEl.textContent = '—';
+            if (eloBEl) eloBEl.textContent = '—';
+
+            if (placeholderAEl) placeholderAEl.style.background = videoColors[Math.floor(Math.random() * videoColors.length)];
+            if (placeholderBEl) placeholderBEl.style.background = videoColors[Math.floor(Math.random() * videoColors.length)];
+
+            if (voteAEl) voteAEl.classList.remove('voted');
+            if (voteBEl) voteBEl.classList.remove('voted');
+            if (contenderAEl) contenderAEl.classList.remove('winner', 'loser');
+            if (contenderBEl) contenderBEl.classList.remove('winner', 'loser');
+            if (voteResultEl) voteResultEl.style.display = 'none';
+            const wName = document.getElementById('resultWinnerName');
+            const lName = document.getElementById('resultLoserName');
+            if (wName) wName.textContent = '—';
+            if (lName) lName.textContent = '—';
+            const inner = document.getElementById('resultInner');
+            if (inner) inner.classList.remove('has-winner');
+
+            // Clear any leftover video from a previous Video battle
+            if (videoAEl) { videoAEl.removeAttribute('src'); videoAEl.style.display = 'none'; }
+            if (videoBEl) { videoBEl.removeAttribute('src'); videoBEl.style.display = 'none'; }
+
+            // Reset placeholders, hide images
+            if (imageAEl) { imageAEl.removeAttribute('src'); imageAEl.style.display = 'none'; }
+            if (imageBEl) { imageBEl.removeAttribute('src'); imageBEl.style.display = 'none'; }
+            if (placeholderAEl) {
+                placeholderAEl.style.display = 'flex';
+                placeholderAEl.innerHTML =
+                    '<div class="video-play-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="video-shimmer"></div>';
+            }
+            if (placeholderBEl) {
+                placeholderBEl.style.display = 'flex';
+                placeholderBEl.innerHTML =
+                    '<div class="video-play-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="video-shimmer"></div>';
+            }
+
+            // Disable voting while loading
+            if (voteAEl) voteAEl.disabled = true;
+            if (voteBEl) voteBEl.disabled = true;
+
+            try {
+                const res = await fetch(`${IMAGE_API}/generate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+
+                    state.currentBattle = {
+                        battle_id: data.battle_id,
+                        model_a_name: data.model_a_name,
+                        model_b_name: data.model_b_name,
+                        elo_a: data.elo_a,
+                        elo_b: data.elo_b
+                    };
+                    const contenderANameEl = document.getElementById('contenderAName');
+                    const contenderBNameEl = document.getElementById('contenderBName');
+
+                    if (contenderANameEl) contenderANameEl.textContent = data.model_a_name;
+                    if (contenderBNameEl) contenderBNameEl.textContent = data.model_b_name;
+                    if (eloAEl) eloAEl.textContent = Math.round(Number(data.elo_a || 0));
+                    if (eloBEl) eloBEl.textContent = Math.round(Number(data.elo_b || 0));
+
+                    // IMAGE A
+                    if (data.output_a?.success) {
+                        imageAEl.src = data.output_a.url;
+                        imageAEl.style.display = "block";
+
+                        await new Promise(resolve => {
+                            imageAEl.onload = resolve;
+                            imageAEl.onerror = resolve;
+                        });
+
+                        if (placeholderAEl) {
+                            placeholderAEl.style.display = "none";
+                            const downloadA = document.getElementById('downloadA');
+                            downloadA.style.display = 'flex';
+                            downloadA.onclick = function(e) {
+                                e.preventDefault();
+                                const a = document.createElement('a');
+                                a.href = imageAEl.src;
+                                a.download = 'image_A.png';
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            };
+                        }
+                    } else {
+                        showVideoError(placeholderAEl, data.output_a?.error || "Image A generation failed.");
+                    }
+
+                    // IMAGE B
+                    if (data.output_b?.success) {
+                        imageBEl.src = data.output_b.url;
+                        imageBEl.style.display = "block";
+
+                        await new Promise(resolve => {
+                            imageBEl.onload = resolve;
+                            imageBEl.onerror = resolve;
+                        });
+
+                        if (placeholderBEl) {
+                            placeholderBEl.style.display = "none";
+                            const downloadB = document.getElementById('downloadB');
+                            downloadB.style.display = 'flex';
+                            downloadB.onclick = function(e) {
+                                e.preventDefault();
+                                const a = document.createElement('a');
+                                a.href = imageBEl.src;
+                                a.download = 'image_B.png';
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            };
+                        }
+                    } else {
+                        showVideoError(placeholderBEl, data.output_b?.error || "Image B generation failed.");
+                    }
+
+                    // Enable voting only if BOTH images generated
+                    const canVote = data.output_a?.success && data.output_b?.success;
+                    if (voteAEl) voteAEl.disabled = !canVote;
+                    if (voteBEl) voteBEl.disabled = !canVote;
+
+                } else {
+                    console.error("Generation failed:", data.error);
+                    showVideoError(placeholderAEl, "Unable to generate images.<br>Please try again.");
+                    showVideoError(placeholderBEl, "Unable to generate images.<br>Please try again.");
+                }
+
+            } catch (err) {
+                console.error("Backend not reachable:", err);
+                showVideoError(placeholderAEl, "Cannot connect to server.<br>Please try again.");
+                showVideoError(placeholderBEl, "Cannot connect to server.<br>Please try again.");
+            }
+        }
+
+        function setupNewBattle() {
+            startBattle(document.getElementById("currentPrompt")?.textContent || "");
+        }
+
+        // ========== VOTING ==========
+        // Elo is now calculated server-side in POST /api/video/vote — the client
+        // no longer computes or mutates ratings itself, and every vote is persisted.
+        document.getElementById('voteA')?.addEventListener('click', () => handleVote('A'));
+        document.getElementById('voteB')?.addEventListener('click', () => handleVote('B'));
+
+        async function handleVote(choice) {
+            if (!state.currentBattle || state.hasVoted) return;
+            state.hasVoted = true;
+
+            const battle = state.currentBattle;
+            const winnerLetter = choice.toLowerCase(); // 'a' or 'b', matches backend contract
+
+            const voteAEl = document.getElementById('voteA');
+            const voteBEl = document.getElementById('voteB');
+            if (voteAEl) voteAEl.disabled = true;
+            if (voteBEl) voteBEl.disabled = true;
+
+            try {
+                const res = await fetch(`${ARENA_API}/vote`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ battle_id: battle.battle_id, winner: winnerLetter })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.error || "Vote failed");
+
+                const voteBtn = document.getElementById('vote' + choice);
+                if (voteBtn) voteBtn.classList.add('voted');
+
+                const winnerCard = document.getElementById('contender' + choice);
+                if (winnerCard) winnerCard.classList.add('winner');
+
+                const loserSide = choice === 'A' ? 'B' : 'A';
+                const loserCard = document.getElementById('contender' + loserSide);
+                if (loserCard) loserCard.classList.add('loser');
+
+                const winnerName = choice === 'A' ? battle.model_a_name : battle.model_b_name;
+                const loserName = choice === 'A' ? battle.model_b_name : battle.model_a_name;
+
+                const beforeWinnerElo = choice === 'A' ? battle.elo_a : battle.elo_b;
+                const beforeLoserElo = choice === 'A' ? battle.elo_b : battle.elo_a;
+                const changeW = Math.round(data.winner.elo - beforeWinnerElo);
+const changeL = Math.round(data.loser.elo - beforeLoserElo);
+                // ─── NEW: show winner + loser ───
+                const winnerEl = document.getElementById('resultWinnerName');
+                const loserEl = document.getElementById('resultLoserName');
+                if (winnerEl) winnerEl.textContent = winnerName;
+                if (loserEl) loserEl.textContent = loserName;
+
+                const resultInner = document.getElementById('resultInner');
+                if (resultInner) resultInner.classList.add('has-winner');
+
+                const eloUp = document.getElementById('eloUp');
+                if (eloUp) eloUp.textContent = `+${changeW}`;
+
+                const eloDown = document.getElementById('eloDown');
+                if (eloDown) eloDown.textContent = `${changeL}`;
+
+                const voteResultEl = document.getElementById('voteResult');
+                if (voteResultEl) voteResultEl.style.display = 'block';
+
+                const actions = document.getElementById("compareActions");
+                if (actions && state.hasVoted) {
+                    actions.style.display = "flex";
+                }
+                const eloAEl = document.getElementById('eloA');
+                const eloBEl = document.getElementById('eloB');
+               if (eloAEl) eloAEl.textContent = Math.round(Number(choice === 'A' ? data.winner.elo : data.loser.elo) || 0);
+if (eloBEl) eloBEl.textContent = Math.round(Number(choice === 'B' ? data.winner.elo : data.loser.elo) || 0);
+            } catch (err) {
+                console.error("Vote failed:", err);
+                state.hasVoted = false;
+                if (voteAEl) voteAEl.disabled = false;
+                if (voteBEl) voteBEl.disabled = false;
+            }
+        }
+
+        // ========== ACTIONS ==========
+        document.getElementById('btnNewBattle')?.addEventListener('click', () => {
+            const prompt = document.getElementById("currentPrompt")?.textContent?.trim();
+            if (prompt) startBattle(prompt);
+        });
+
+        /* =========================================================
+
+           ========================================================= */
+        (function() {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // ---- 1. Turn About card paragraphs (with blank-line breaks) into
+            //         separate <p> tags for a nicer, scannable layout. ----
+            document.querySelectorAll('.about-card-text').forEach(el => {
+                const raw = el.textContent;
+                const chunks = raw.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+                if (chunks.length > 1) {
+                    el.innerHTML = chunks.map(c => `<p>${c}</p>`).join('');
+                }
+            });
+
+            // ---- 2. Scroll-triggered reveal for cards across the app ----
+            const revealTargets = document.querySelectorAll(
+                '.about-card, .method-card, .rank-card, .contender-card'
+            );
+            revealTargets.forEach(el => el.classList.add('reveal-up'));
+
+            if (!reduceMotion && 'IntersectionObserver' in window) {
+                const revealObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.15 });
+                revealTargets.forEach(el => revealObserver.observe(el));
+            } else {
+                revealTargets.forEach(el => el.classList.add('is-visible'));
+            }
+
+            // Re-check reveals whenever a page becomes active (since pages start hidden)
+            const pageObserver = new MutationObserver(() => {
+                document.querySelectorAll('.reveal-up:not(.is-visible)').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        el.classList.add('is-visible');
+                    }
+                });
+            });
+            document.querySelectorAll('.page').forEach(p => {
+                pageObserver.observe(p, { attributes: true, attributeFilter: ['class'] });
+            });
+
+            // ---- 3. Button ripple micro-interaction ----
+            function addRipple(e) {
+                const btn = e.currentTarget;
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                btn.appendChild(ripple);
+            }
+            if (!reduceMotion) {
+                document.querySelectorAll('.btn-generate, .btn-vote, .btn-secondary, .nav-tab, .theme-toggle')
+                    .forEach(btn => btn.addEventListener('click', addRipple));
+            }
+
+            // ---- 4. Confetti burst on voting (purely decorative, additive listener) ----
+            function burstConfetti(originEl) {
+                if (reduceMotion || !originEl) return;
+                const rect = originEl.getBoundingClientRect();
+                const colors = ['#4F7DFF', '#F5C451', '#39D98A', '#FF5E5E', '#FFFFFF'];
+                const originX = rect.left + rect.width / 2;
+                const originY = rect.top + rect.height / 2;
+                for (let i = 0; i < 24; i++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = 60 + Math.random() * 90;
+                    piece.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+                    piece.style.setProperty('--dy', Math.sin(angle) * dist - 20 + 'px');
+                    piece.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+                    piece.style.left = originX + 'px';
+                    piece.style.top = originY + 'px';
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.animationDuration = (0.7 + Math.random() * 0.5) + 's';
+                    document.body.appendChild(piece);
+                    setTimeout(() => piece.remove(), 1300);
+                }
+            }
+            document.getElementById('voteA')?.addEventListener('click', (e) => burstConfetti(e.currentTarget));
+            document.getElementById('voteB')?.addEventListener('click', (e) => burstConfetti(e.currentTarget));
+
+            // ---- 5. Gentle 3D tilt on hoverable cards ----
+            function attachTilt(selector, maxTilt) {
+                document.querySelectorAll(selector).forEach(card => {
+                    card.addEventListener('mousemove', (e) => {
+                        if (reduceMotion) return;
+                        const rect = card.getBoundingClientRect();
+                        const px = (e.clientX - rect.left) / rect.width;
+                        const py = (e.clientY - rect.top) / rect.height;
+                        const tiltX = (0.5 - py) * maxTilt;
+                        const tiltY = (px - 0.5) * maxTilt;
+                        card.style.transform = `translateY(-4px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+                        card.style.setProperty('--mx', (px * 100) + '%');
+                        card.style.setProperty('--my', (py * 100) + '%');
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = '';
+                    });
+                });
+            }
+            attachTilt('.about-card', 5);
+            attachTilt('.method-card', 4);
+            attachTilt('.contender-card', 3);
+
+            // ---- 6. Subtle floating particles inside the About section ----
+            const aboutSection = document.getElementById('aboutSection');
+            if (aboutSection && !reduceMotion) {
+                for (let i = 0; i < 10; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'about-particle';
+                    const size = 3 + Math.random() * 4;
+                    p.style.width = p.style.height = size + 'px';
+                    p.style.left = Math.random() * 100 + '%';
+                    p.style.top = Math.random() * 100 + '%';
+                    p.style.animationDelay = (Math.random() * 6) + 's';
+                    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+                    aboutSection.appendChild(p);
+                }
+            }
+
+            // ---- 7. Gentle parallax on background orbs while scrolling ----
+            if (!reduceMotion) {
+                let ticking = false;
+                window.addEventListener('scroll', () => {
+                    if (ticking) return;
+                    ticking = true;
+                    requestAnimationFrame(() => {
+                        const y = window.scrollY;
+                        const orb1 = document.querySelector('.orb-1');
+                        const orb2 = document.querySelector('.orb-2');
+                        const orb3 = document.querySelector('.orb-3');
+                        if (orb1) orb1.style.marginTop = (y * 0.08) + 'px';
+                        if (orb2) orb2.style.marginTop = (-y * 0.05) + 'px';
+                        if (orb3) orb3.style.marginTop = (y * 0.03) + 'px';
+                        ticking = false;
+                    });
+                }, { passive: true });
+            }
+
+            // ---- 8. Decorative custom cursor (desktop / fine-pointer only) ----
+            const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+            const cursorDot = document.getElementById('cursorDot');
+            const cursorRing = document.getElementById('cursorRing');
+
+            if (isFinePointer && cursorDot && cursorRing && !reduceMotion) {
+                let dotX = 0,
+                    dotY = 0,
+                    ringX = 0,
+                    ringY = 0;
+                let shown = false;
+
+                window.addEventListener('mousemove', (e) => {
+                    dotX = e.clientX;
+                    dotY = e.clientY;
+                    if (!shown) {
+                        shown = true;
+                        cursorDot.classList.add('cursor-visible');
+                        cursorRing.classList.add('cursor-visible');
+                        ringX = dotX;
+                        ringY = dotY;
+                    }
+                    cursorDot.style.left = dotX + 'px';
+                    cursorDot.style.top = dotY + 'px';
+                });
+
+                window.addEventListener('mouseout', (e) => {
+                    if (!e.relatedTarget && !e.toElement) {
+                        cursorDot.classList.remove('cursor-visible');
+                        cursorRing.classList.remove('cursor-visible');
+                    }
+                });
+
+                window.addEventListener('mousemove', () => {
+                    cursorDot.classList.add('cursor-visible');
+                    cursorRing.classList.add('cursor-visible');
+                });
+
+                function ringLoop() {
+                    ringX += (dotX - ringX) * 0.18;
+                    ringY += (dotY - ringY) * 0.18;
+                    cursorRing.style.left = ringX + 'px';
+                    cursorRing.style.top = ringY + 'px';
+                    requestAnimationFrame(ringLoop);
+                }
+                requestAnimationFrame(ringLoop);
+
+                const hoverTargets =
+                    'a, button, .btn-generate, .btn-vote, .btn-secondary, .nav-tab, .theme-toggle, .contender-card, .about-card, .method-card, .rank-card, textarea, input';
+                document.addEventListener('mouseover', (e) => {
+                    if (e.target.closest(hoverTargets)) cursorRing.classList.add('cursor-hover');
+                });
+                document.addEventListener('mouseout', (e) => {
+                    if (e.target.closest(hoverTargets)) cursorRing.classList.remove('cursor-hover');
+                });
+            }
+
+            // ---- 9. Subtle mouse-parallax on the hero content ----
+            const heroSection = document.getElementById('heroSection');
+            const heroParallaxEl = document.getElementById('heroContentParallax');
+            if (heroSection && heroParallaxEl && isFinePointer && !reduceMotion) {
+                heroParallaxEl.classList.add('hero-parallax');
+                heroSection.addEventListener('mousemove', (e) => {
+                    const rect = heroSection.getBoundingClientRect();
+                    const px = (e.clientX - rect.left) / rect.width - 0.5;
+                    const py = (e.clientY - rect.top) / rect.height - 0.5;
+                    heroParallaxEl.style.transform = `translate(${px * -10}px, ${py * -8}px)`;
+                });
+                heroSection.addEventListener('mouseleave', () => {
+                    heroParallaxEl.style.transform = '';
+                });
+
+                document.querySelectorAll('.hero-piece-parallax').forEach((wrap, i) => {
+                    heroSection.addEventListener('mousemove', (e) => {
+                        const rect = heroSection.getBoundingClientRect();
+                        const px = (e.clientX - rect.left) / rect.width - 0.5;
+                        const py = (e.clientY - rect.top) / rect.height - 0.5;
+                        const strength = 14 + i * 4;
+                        wrap.style.transform = `translate(${px * strength}px, ${py * strength}px)`;
+                    });
+                });
+            }
+        })();
+
+        // ─── NEW: inject provider chips into the homepage footer ───
+        (function initProviders() {
+            const container = document.getElementById('footerProviders');
+            if (!container) return;
+            const providers = [
+    { name: 'Amazon Nova' },
+    { name: 'Google Veo 3.1' },
+    { name: 'MiniMax Hailuo 02' },
+    { name: 'Seedance Lite' },
+    { name: 'Seedance Pro' },
+    { name: 'GPT Image' },
+    { name: 'Imagen' },
+    { name: 'FLUX' },
+    { name: 'Recraft' },
+    { name: 'Ideogram' },
+    { name: 'OpenAI Sora' },
+    { name: 'DALL·E 3' }
+];
+            providers.forEach(p => {
+                const chip = document.createElement('span');
+                chip.className = 'provider-chip';
+                chip.innerHTML = `
+              <span class="chip-dot"></span>
+              <span>${p.name}</span>
+            `;
+                container.appendChild(chip);
+            });
+        })();
+
+        // ─── ensure "Battles" appears on initial leaderboard load ───
+        // (renderLeaderboard already includes it; this just triggers a refresh
+        //  if the leaderboard is the active page on first load)
+        (function initialLeaderboardCheck() {
+            if (document.getElementById('pageLeaderboard').classList.contains('active')) {
+                renderLeaderboard();
+            }
+        })();
+        window.addEventListener("DOMContentLoaded", () => {
+    loadStats();
+});
+    </script>
+    <script>
+        /* =========================================================
+
+           ========================================================= */
+        (function() {
+            const GENERATE_PATHS = ['/video/generate', '/image/generate']; // Image mode addition
+
+            const messages = [
+                ' Analyzing your prompt...',
+                ' Understanding your request...',
+                '🎬 Preparing the generation...',
+                ' Creating your video...',
+                ' Enhancing quality...',
+                ' Rendering frames...',
+                '✨ Applying final touches...',
+                ' Almost done...'
+            ];
+
+            // Known backend error codes → friendly copy. If the backend already
+            // sends a readable sentence in `error`/`message`, that text is shown
+            // as-is instead of this map (see friendlyError below).
+            const errorMap = {
+                insufficient_credits: 'Not enough credits.',
+                no_credits: 'Not enough credits.',
+                provider_unavailable: 'API provider unavailable.',
+                provider_error: 'API provider unavailable.',
+                auth_failed: 'Authentication failed.',
+                unauthorized: 'Authentication failed.',
+                invalid_api_key: 'Authentication failed.',
+                network_error: 'Network connection lost.',
+                timeout: 'Request timed out.',
+                request_timeout: 'Request timed out.',
+                server_error: 'Server error.',
+                internal_error: 'Server error.',
+                invalid_prompt: 'Invalid prompt.'
+            };
+
+            const overlay = document.getElementById('loadingOverlay');
+            const progressEl = document.getElementById('loadingProgress');
+            const textEl = document.getElementById('loadingText');
+            const retryBtn = document.getElementById('edenRetryBtn');
+            const generateBtn = document.getElementById('btnGenerate');
+            const newBattleBtn = document.getElementById('btnNewBattle');
+
+            if (!overlay || !progressEl || !textEl) return; // safety no-op if markup is missing
+
+            let msgTimer = null;
+            let progressTimer = null;
+            let msgIndex = 0;
+            let progress = 0;
+            let lastPrompt = '';
+
+            function setLoadingButtonsDisabled(disabled) {
+                if (generateBtn) generateBtn.disabled = disabled;
+                if (newBattleBtn) newBattleBtn.disabled = disabled;
+            }
+
+            function setText(msg) {
+                textEl.classList.remove('fade');
+                void textEl.offsetWidth; // restart the existing fade animation
+                textEl.textContent = msg;
+                textEl.classList.add('fade');
+            }
+
+            function scheduleNextMessage() {
+                const delay = 2000 + Math.random() * 2000; // 2–4s, loops for long generations
+                msgTimer = setTimeout(() => {
+                    msgIndex = (msgIndex + 1) % messages.length;
+                    setText(messages[msgIndex]);
+                    scheduleNextMessage();
+                }, delay);
+            }
+
+            function startProgressCrawl() {
+                progress = 6;
+                progressEl.style.width = progress + '%';
+                progressTimer = setInterval(() => {
+                    progress += (92 - progress) * 0.06; // eases toward ~92%, never claims completion early
+                    progressEl.style.width = Math.min(progress, 92) + '%';
+                }, 300);
+            }
+
+            function stopTimers() {
+                clearTimeout(msgTimer);
+                clearInterval(progressTimer);
+                msgTimer = null;
+                progressTimer = null;
+            }
+
+            function showLoading() {
+                stopTimers();
+                overlay.classList.remove('eden-error');
+                overlay.style.display = 'flex';
+                setLoadingButtonsDisabled(true);
+                msgIndex = 0;
+                setText(messages[0]);
+                scheduleNextMessage();
+                startProgressCrawl();
+            }
+
+            function hideLoading() {
+                stopTimers();
+                progressEl.style.width = '100%';
+                setLoadingButtonsDisabled(false);
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    overlay.classList.remove('eden-error');
+                    progressEl.style.width = '0%';
+                }, 220);
+            }
+
+            function showError(message) {
+                stopTimers();
+                overlay.classList.add('eden-error');
+                progressEl.style.width = '100%';
+                setText(message || 'Unknown error.');
+                setLoadingButtonsDisabled(false);
+                // Auto-dismiss so it never blocks the UI. Your existing placeholder
+                // error text (already part of startBattle) remains visible underneath
+                // as a fallback the whole time.
+                setTimeout(() => {
+                    if (overlay.classList.contains('eden-error')) {
+                        overlay.style.display = 'none';
+                        overlay.classList.remove('eden-error');
+                        progressEl.style.width = '0%';
+                    }
+                }, 5000);
+            }
+
+            function friendlyError(raw) {
+                if (!raw || typeof raw !== 'string') return null;
+                const trimmed = raw.trim();
+                if (!trimmed) return null;
+                const key = trimmed.toLowerCase().replace(/[\s-]+/g, '_');
+                return errorMap[key] || trimmed; // trust the backend's own text if we don't recognize a code
+            }
+
+            retryBtn?.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                overlay.classList.remove('eden-error');
+                if (lastPrompt && typeof window.startBattle === 'function') {
+                    window.startBattle(lastPrompt); // reuses your existing generation flow as-is
+                }
+            });
+
+            // ---- Transparent fetch observer ----
+            // The exact same request goes out and the exact same response comes
+            // back to your app; this only peeks at a clone of the response.
+            const originalFetch = window.fetch.bind(window);
+            window.fetch = function(input, init) {
+                const url = typeof input === 'string' ? input : (input && input.url) || '';
+                if (!GENERATE_PATHS.some(p => url.indexOf(p) !== -1)) {
+                    return originalFetch(input, init);
+                }
+
+                try {
+                    const body = init && init.body ? JSON.parse(init.body) : null;
+                    if (body && body.prompt) lastPrompt = body.prompt;
+                } catch (e) { /* ignore — purely cosmetic for the retry button */ }
+
+                showLoading();
+                const promise = originalFetch(input, init);
+
+                promise
+                    .then((response) =>
+                        response.clone().json().catch(() => null).then((data) => ({
+                            status: response.status,
+                            data
+                        }))
+                    )
+                    .then(({ status, data }) => {
+                        if (data && data.success) {
+                            hideLoading();
+                            return;
+                        }
+                        const raw = data && (data.error || data.message);
+                        let friendly = friendlyError(raw);
+                        if (!friendly) {
+                            if (status === 401 || status === 403) friendly = 'Authentication failed.';
+                            else if (status === 402) friendly = 'Not enough credits.';
+                            else if (status === 408 || status === 504) friendly = 'Request timed out.';
+                            else if (status === 502 || status === 503) friendly = 'API provider unavailable.';
+                            else if (status >= 500) friendly = 'Server error.';
+                            else friendly = 'Unknown error.';
+                        }
+                        showError(friendly);
+                    })
+                    .catch((err) => {
+                        const msg = (err && err.message ? err.message : '').toLowerCase();
+                        if (msg.indexOf('abort') !== -1 || msg.indexOf('timeout') !== -1) {
+                            showError('Request timed out.');
+                        } else if (msg.indexOf('fetch') !== -1 || msg.indexOf('network') !== -1) {
+                            showError('Network connection lost.');
+                        } else {
+                            showError('Unknown error.');
+                        }
+                    });
+
+                return promise;
+            };
+        })();
+    </script>
+</body>
+</html>
