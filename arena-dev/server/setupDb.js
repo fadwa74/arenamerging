@@ -44,6 +44,11 @@ const insert = db.prepare(`
     ["Stable Diffusion XL", "stabilityai", "stable-diffusion-xl-1024-v1-0", "image"],
     ["Seedream 5", "bytedance", "seedream-5-0-260128", "image"],
     ["Leonardo Lightning XL", "leonardo", "Leonardo Lightning XL", "image"],
+    ["Leonardo Anime XL", "leonardo", "Leonardo Anime XL", "image"],
+    ["Leonardo Vision XL", "leonardo", "Leonardo Vision XL", "image"],
+    ["Leonardo Diffusion XL", "leonardo", "Leonardo Diffusion XL", "image"],
+    ["MiniMax Image 01", "minimax", "image-01", "image"],
+    ["Replicate Classic", "replicate", "classic", "image"],
 ].forEach(model => insert.run(...model));
 
 // =====================
