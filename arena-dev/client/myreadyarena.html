@@ -3538,19 +3538,21 @@ if (eloBEl) eloBEl.textContent = Math.round(Number(choice === 'B' ? data.winner.
         (function initProviders() {
             const container = document.getElementById('footerProviders');
             if (!container) return;
-            const providers = [
-    { name: 'Amazon Nova' },
-    { name: 'Google Veo 3.1' },
-    { name: 'MiniMax Hailuo 02' },
-    { name: 'Seedance Lite' },
-    { name: 'Seedance Pro' },
-    { name: 'GPT Image' },
-    { name: 'Imagen' },
-    { name: 'FLUX' },
-    { name: 'Recraft' },
-    { name: 'Ideogram' },
-    { name: 'OpenAI Sora' },
-    { name: 'DALL·E 3' }
+         const providers = [
+    { name: 'Nova Reel' },
+    { name: 'PixVerse V6' },
+    { name: 'Veo 3.1' },
+    { name: 'Seedance 2' },
+
+    { name: 'DALL-E 3' },
+    { name: 'Stable Diffusion XL' },
+    { name: 'Seedream 5' },
+    { name: 'Leonardo Lightning XL' },
+    { name: 'Leonardo Anime XL' },
+    { name: 'Leonardo Vision XL' },
+    { name: 'Leonardo Diffusion XL' },
+    { name: 'MiniMax Image 01' },
+    { name: 'Replicate Classic' }
 ];
             providers.forEach(p => {
                 const chip = document.createElement('span');
