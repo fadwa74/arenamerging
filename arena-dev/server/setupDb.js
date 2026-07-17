@@ -33,9 +33,7 @@ const insert = db.prepare(`
     ["Google Chirp 3 HD", "google", "chirp-3-hd", "tts"]
 ].forEach(model => insert.run(...model));
 
-// =====================
-// Image Generation
-// =====================
+
 // =====================
 // Image Generation
 // =====================
