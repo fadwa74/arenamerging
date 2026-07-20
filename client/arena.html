@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eden · The Arena for AI Video and Image Models</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Decorative custom cursor (desktop only, purely visual) -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Chess grid background -->
+    <div class="chess-grid" id="chessGrid"></div>
+
+    <!-- Gradient orbs -->
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar" id="navBar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo" id="navLogo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="logo-icon">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                </svg>
+                <span>Eden</span>
+            </a>
+            <div class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-page="hero" id="tabHero">Home</button>
+                <button class="nav-tab" data-page="compare" id="tabCompare">Compare</button>
+                <button class="nav-tab" data-page="leaderboard" id="tabLeaderboard">Leaderboard</button>
+                <button class="nav-tab" data-page="methodology" id="tabMethodology">Methodology</button>
+                <button class="nav-tab" data-page="about" id="tabAbout">About</button>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Page -->
+    <main class="page active" id="pageHero">
+        <section class="hero" id="heroSection">
+            <div class="hero-piece-parallax" style="position:absolute; top:14%; left:8%;"><span class="hero-piece" style="animation-delay:0s;">♔</span></div>
+            <div class="hero-piece-parallax" style="position:absolute; top:22%; right:10%;"><span class="hero-piece" style="animation-delay:1.5s; font-size:34px;">♛</span></div>
+            <div class="hero-piece-parallax" style="position:absolute; bottom:18%; left:14%;"><span class="hero-piece" style="animation-delay:3s; font-size:30px;">♞</span></div>
+            <div class="hero-piece-parallax" style="position:absolute; bottom:12%; right:16%;"><span class="hero-piece" style="animation-delay:4.5s;">♜</span></div>
+            <div class="hero-content" id="heroContentParallax">
+                <h1 class="hero-title" id="heroTitle">The Arena for<br>AI Video and Image Models</h1>
+                <p class="hero-subtitle" id="heroSubtitle">  Blind comparisons Fair rankings Powered by Eden AI</p>
+                <div class="battle-mode-toggle" id="battleModeToggle" role="tablist" aria-label="Battle mode">
+                    <button type="button" class="mode-btn active" data-mode="video" id="modeVideoBtn" role="tab" aria-selected="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                        Video
+                    </button>
+                    <button type="button" class="mode-btn" data-mode="image" id="modeImageBtn" role="tab" aria-selected="false">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Image
+                    </button>
+                </div>
+                <div class="hero-input-wrap" id="heroInputWrap">
+                    <textarea class="hero-input" id="promptInput" placeholder="Describe a video scenario to battle..." rows="1"></textarea>
+                    <button class="btn-generate" id="btnGenerate">
+                        <span class="btn-text">Generate Battle</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+                <div class="hero-stats" id="heroStats">
+                    <div class="stat"><span class="stat-number" id="statBattles">2,847</span><span class="stat-label">Battles</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat"><span class="stat-number" id="statModels">8</span><span class="stat-label">Models</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat"><span class="stat-number" id="statVotes">14,203</span><span class="stat-label">Votes</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── NEW: HOMEPAGE FOOTER ─── -->
+        <footer class="home-footer" id="homeFooter">
+            <div class="footer-providers" id="footerProviders">
+                <!-- provider chips injected by JS -->
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-powered">
+                Powered by <strong>Eden AI</strong>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Compare Page -->
+    <main class="page" id="pageCompare">
+        <section class="compare-section" id="compareSection">
+            <div class="compare-header">
+                <h2 class="section-title" id="compareTitle">Arena Battle</h2>
+                <p class="section-subtitle" id="compareSubtitle">Watch two AI models compete. Vote for the better video.</p>
+            </div>
+            <div class="compare-prompt-display" id="comparePromptDisplay">
+                <span class="prompt-label">Prompt</span>
+                <span class="prompt-text" id="currentPrompt">waiting for your prompt.</span>
+            </div>
+            <div class="compare-grid" id="compareGrid">
+                <div class="contender-card" id="contenderA" data-contender="A">
+                    <div class="contender-header">
+                        <span class="contender-label" id="contenderALabel">Contender A</span>
+                        <span class="contender-elo" id="eloA">1520</span>
+                    </div>
+                    <div class="video-container" id="videoContainerA">
+                        <div class="video-placeholder" id="videoPlaceholderA">
+                            <div class="video-play-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                            <div class="video-shimmer"></div>
+                        </div>
+                        <video id="videoA" muted loop playsinline autoplay></video>
+                        <img id="imageA" alt="">
+                    </div>
+                    <button class="btn-download" id="downloadA" style="display:none; margin-top:10px; width:100%;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span id="downloadALabel">Download Video</span>
+</button>
+                    <button class="btn-vote" id="voteA" data-vote="A" disabled>
+                        <span class="vote-icon">♔</span>
+                        <span class="vote-text">Vote for A</span>
+                    </button>
+                </div>
+                <div class="vs-divider" id="vsDivider">
+                    <span class="vs-text">VS</span>
+                </div>
+                <div class="contender-card" id="contenderB" data-contender="B">
+                    <div class="contender-header">
+                        <span class="contender-label" id="contenderBLabel">Contender B</span>
+                        <span class="contender-elo" id="eloB">1485</span>
+                    </div>
+                    <div class="video-container" id="videoContainerB">
+                        <div class="video-placeholder" id="videoPlaceholderB">
+                            <div class="video-play-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                            <div class="video-shimmer"></div>
+                        </div>
+                        <video id="videoB" muted loop playsinline autoplay></video>
+                        <img id="imageB" alt="">
+                    </div>
+                    <button class="btn-download" id="downloadB" style="display:none; margin-top:10px; width:100%;">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <span id="downloadBLabel">Download Video</span>
+</button>
+                    <button class="btn-vote" id="voteB" data-vote="B" disabled>
+                        <span class="vote-icon">♔</span>
+                        <span class="vote-text">Vote for B</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ─── MODIFIED: vote result with Winner / Loser ─── -->
+            <div class="vote-result" id="voteResult" style="display:none">
+                <div class="result-inner" id="resultInner">
+                    <span class="result-icon" id="resultIcon">♛</span>
+                    <div class="result-winner-loser" id="resultWinnerLoser">
+                        <div class="wl-row">
+                            <span class="wl-label">Winner</span>
+                            <span class="wl-name win" id="resultWinnerName">—</span>
+                        </div>
+                        <div class="wl-row">
+                            <span class="wl-label">Loser</span>
+                            <span class="wl-name lose" id="resultLoserName">—</span>
+                        </div>
+                    </div>
+                    <div class="elo-change" id="eloChange">
+                        <span class="elo-up" id="eloUp">+12</span>
+                        <span class="elo-down" id="eloDown">-12</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compare-actions" id="compareActions" style="display:none">
+                <button class="btn-secondary" id="btnNewBattle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    New Battle
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Leaderboard Page -->
+    <main class="page" id="pageLeaderboard">
+        <section class="leaderboard-section" id="leaderboardSection">
+            <div class="leaderboard-header">
+                <h2 class="section-title" id="leaderboardTitle">Rankings</h2>
+                <p class="section-subtitle" id="leaderboardSubtitle">Live Elo ratings. Updated after every battle.</p>
+            </div>
+            <div class="leaderboard-list" id="leaderboardList"></div>
+        </section>
+    </main>
+
+    <!-- Methodology Page -->
+    <main class="page" id="pageMethodology">
+        <section class="methodology-section" id="methodologySection">
+            <div class="methodology-header">
+                <h2 class="section-title" id="methodologyTitle">Methodology</h2>
+                <p class="section-subtitle" id="methodologySubtitle">How the Elo rating system determines the best AI video model.</p>
+            </div>
+            <div class="methodology-grid" id="methodologyGrid">
+                <div class="method-card" id="methodCard1">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                    <div class="method-number">01</div>
+                    <h3 class="method-title">Blind Comparison</h3>
+                    <p class="method-desc">Two AI models generate videos or images from the same prompt. Viewers see both videos without knowing which model produced which ensuring pure quality judgment.</p>
+                </div>
+                <div class="method-card" id="methodCard2">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/></svg></div>
+                    <div class="method-number">02</div>
+                    <h3 class="method-title">Elo Rating System</h3>
+                    <p class="method-desc">Originally designed for chess, the Elo system calculates relative skill levels. Winners gain points, losers lose points. The magnitude depends on the expected outcome.</p>
+                </div>
+                <div class="method-card" id="methodCard3">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg></div>
+                    <div class="method-number">03</div>
+                    <h3 class="method-title">Expected Score</h3>
+                    <div class="method-formula" id="methodFormula">
+                        <code>E_A = 1 / (1 + 10^((R_B - R_A) / 400))</code>
+                    </div>
+                    <p class="method-desc">The expected score predicts how likely a model is to win based on current ratings. Upsetting a higher rated model yields more points.</p>
+                </div>
+                <div class="method-card" id="methodCard4">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
+                    <div class="method-number">04</div>
+                    <h3 class="method-title">Rating Update</h3>
+                    <div class="method-formula" id="methodFormula2">
+                        <code>R'_A = R_A + K × (S_A - E_A)</code>
+                    </div>
+                    <p class="method-desc">After each battle, ratings update using the K-factor (set to 32). The actual result is compared against expectations to produce the new rating.</p>
+                </div>
+                <div class="method-card" id="methodCard5">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></div>
+                    <div class="method-number">05</div>
+                    <h3 class="method-title">Convergence</h3>
+                    <p class="method-desc">Over hundreds of battles, ratings stabilize to reflect true model strength. The more battles a model participates in, the more reliable its rating becomes.</p>
+                </div>
+                <div class="method-card" id="methodCard6">
+                    <div class="method-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                    <div class="method-number">06</div>
+                    <h3 class="method-title">Fairness Guarantees</h3>
+                    <p class="method-desc">Models are randomly paired. Prompt diversity prevents specialization. Blind voting eliminates brand bias. The system is mathematically self-correcting.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- About Page -->
+    <main class="page" id="pageAbout">
+        <section class="about-section" id="aboutSection">
+            <div class="about-glow about-glow-1"></div>
+            <div class="about-glow about-glow-2"></div>
+            <div class="about-header">
+                <h2 class="section-title" id="aboutTitle">About Eden AI</h2>
+                <p class="section-subtitle" id="aboutSubtitle">Building the definitive benchmark for AI video generation.</p>
+            </div>
+            <div class="about-content" id="aboutContent">
+                <div class="about-card" id="aboutCard1">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    </div>
+                    <h3 class="about-card-title">The Mission<span class="title-underline"></span></h3>
+                    <p class="about-card-text">AI video and image generation are evolving at an incredible pace. But one question remains: which AI model is actually the best?
+
+Most benchmarks today are unreliable  they can be biased, selectively curated, or disconnected from real world quality.
+
+Eden Arena solves this by introducing a crowd powered evaluation platform where AI models compete head to head under identical conditions. From cinematic videos to creative images, every model is judged through fair comparisons and real human feedback.</p>
+                </div>
+                <div class="about-card" id="aboutCard2">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/></svg>
+                    </div>
+                    <h3 class="about-card-title">Why Elo?<span class="title-underline"></span></h3>
+                    <p class="about-card-text">The Elo rating system has been the standard for competitive ranking since the 1960s. It powers systems like chess, esports, and matchmaking platforms around the world.
+
+By adapting Elo to AI video and image generation, we create a ranking system that is:
+
+Fair · Dynamic · Self correcting over time
+
+Every vote improves the rankings, making the system smarter with each battle.</p>
+                </div>
+                <div class="about-card" id="aboutCard3">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h3 class="about-card-title">Open &amp; Transparent<span class="title-underline"></span></h3>
+                    <p class="about-card-text">All battle results are public. Ratings are updated continuously. The methodology is designed around transparency and community participation.
+
+We believe the best way to evaluate AI generation is through open competition, unbiased comparisons, and the collective judgment of the community.</p>
+                </div>
+                <div class="about-card" id="aboutCard4">
+                    <div class="about-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                    </div>
+                    <h3 class="about-card-title">Get Involved<span class="title-underline"></span></h3>
+                    <p class="about-card-text">Every vote matters. Whether you're a researcher, developer, creator, or AI enthusiast, your judgment helps shape the future of AI generation.
+
+Join the arena, compare the world's leading AI video and image models, cast your votes, and help determine which models truly stand above the rest.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display:none">
+        <div class="loading-content">
+            <div class="eden-spinner" id="edenSpinner"></div>
+            <svg class="eden-error-icon" id="edenErrorIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <div class="loading-bar"><div class="loading-progress" id="loadingProgress"></div></div>
+            <p class="loading-text" id="loadingText">Generating...</p>
+            <button class="eden-retry-btn" id="edenRetryBtn" type="button">Try Again</button>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

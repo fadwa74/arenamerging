@@ -16,10 +16,11 @@ const insert = db.prepare(`
 // Video Generation
 // =====================
 [
-    ["Nova Reel", "amazon", "amazon.nova-reel-v1:1", "video"],
-    ["PixVerse V6", "pixverse", "v6", "video"],
+    //["PixVerse V6", "pixverse", "v6", "video"],                       These two don't work yet
+    //["Seedance 2", "bytedance", "seedance-2-0-260128", "video"],
     ["Veo 3.1", "google", "veo-3.1-fast-generate-preview", "video"],
-    ["Seedance 2", "bytedance", "seedance-2-0-260128", "video"],
+    ["Hailuo 2.3", "minimax", "MiniMax-Hailuo-2.3", "video"],
+    ["Sora 2", "openai", "sora-2", "video"]
 ].forEach(model => insert.run(...model));
 
 // =====================
@@ -36,13 +37,12 @@ const insert = db.prepare(`
 // =====================
 // Image Generation
 // =====================
-// =====================
-// Image Generation
-// =====================
 [
-    ["DALL-E 3", "openai", "dall-e-3", "image"],
+    ["GPT Image 2", "openai", "gpt-image-2", "image"],
+    ["Imagen 4", "google", "imagen-4.0-fast-generate-001", "image"],
+    ["Gemini 3", "google", "gemini-3-pro-image-preview", "image"],
     ["Stable Diffusion XL", "stabilityai", "stable-diffusion-xl-1024-v1-0", "image"],
-    ["Seedream 5", "bytedance", "seedream-5-0-260128", "image"],
+    ["Seedreem 5", "bytedance", "seedream-5-0-260128", "image"],
     ["Leonardo Lightning XL", "leonardo", "Leonardo Lightning XL", "image"],
 ].forEach(model => insert.run(...model));
 

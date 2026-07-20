@@ -50,6 +50,7 @@ export const vote = (req, res) => {
     }
   });
 };
+
 export const leaderboard = (req, res) => {
   try {
     const { type } = req.params;
